@@ -14,14 +14,16 @@ namespace softtest
     abstract class OgNode
     {
         protected int maxMonsters, nodeLevel,healthPotions, timeCrystals;
+        protected string name;
+        public abstract string toString();
+        public abstract string Name();
     }
 
-    class BeginNode : OgNode 
+    class BeginNode : Node 
     {
-        Edge nextEdge; 
-        public BeginNode(Node nNext)
+        public BeginNode(int nLevel)
+            : base(nLevel,"begin")
         {
-            nextEdge = new Edge(this,nNext);
             maxMonsters = nodeLevel = 0;
         }
     }
@@ -34,6 +36,17 @@ namespace softtest
             nodeLevel = 0;
             healthPotions = 0;
             timeCrystals = 0;
+            name = "end";
+        }
+
+        public override string Name()
+        {
+            return name;
+        }
+
+        public override string toString()
+        {
+            return "endnode";
         }
     }
 
@@ -43,15 +56,64 @@ namespace softtest
         bool contested;
         Edge north, south, east, west;
 
-        public Node(int nLevel,Node nNorth,Node nSouth,Node nEast,Node nWest)
+        public Node(int nLevel,string nName)
         {
             nodeLevel = nLevel;
             m = 0.9f;
             maxMonsters = (int)m*(nodeLevel+1);
-            north = new Edge(this,nNorth);
-            south = new Edge(this,nSouth);
-            east  = new Edge(this,nEast);
-            west  = new Edge(this,nWest);
+            name = nName;
+        }
+
+        public override string toString() 
+        {
+            String eNorth,eEast,eSouth,eWest;
+
+            if (north == null)
+                eNorth = "null";
+            else eNorth = North.ToString();
+
+            if (east == null)
+                eEast = "null";
+            else eEast = East.ToString();
+
+            if (south == null)
+                eSouth = "null";
+            else eSouth = South.ToString();
+
+            if (west == null)
+                eWest = "null";
+            else eWest = West.ToString();
+
+            return "north: "+ eNorth + " ,east: "+ eEast +" ,south: "+ eSouth+ " ,west: "+ eWest ;
+        }
+
+        public override string Name()
+        {
+            return name;
+        }
+
+        public Edge North
+        {
+            get { return north; }
+            set { north = value;}
+        }
+
+        public Edge East
+        {
+            get { return east; }
+            set { east = value; }
+        }
+
+        public Edge South
+        {
+            get { return south; }
+            set { south = value; }
+        }
+
+        public Edge West
+        {
+            get { return west; }
+            set { west = value; }
         }
  
     }
@@ -66,8 +128,29 @@ namespace softtest
         {
             node1 = n1;
             node2 = n2;
-            if (node2 == null)
-                isEmpty = true;
+        }
+
+        public bool IsEmpty
+        {
+            get {     if (node2 == null || node1 == null)
+                        isEmpty = true;
+                      return isEmpty;}
+
+            set { isEmpty = value; }
+        }
+
+        public override string ToString()
+        {
+            string n1,n2;
+            if (node1 != null)
+                n1 = node1.Name();
+            else n1 = "null";
+
+            if (node2 != null)
+                n2 = node2.Name();
+            else n2 = "null";
+
+            return n1 + " to " + n2;
         }
     }
 }
