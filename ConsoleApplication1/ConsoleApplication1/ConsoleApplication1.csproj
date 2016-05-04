@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Creatures\Creature.cs" />
+    <Compile Include="Creatures\Dungeon.cs" />
     <Compile Include="Creatures\Monster.cs" />
     <Compile Include="Creatures\Pack.cs" />
     <Compile Include="Creatures\Player.cs" />
