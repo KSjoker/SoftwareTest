@@ -17,11 +17,9 @@ namespace ConsoleApplication1
 
 
         int MaxHP;
-        int potions;
-        int healAmount = 10; // amount of healing from potions
-        int timeCrystals;
+        List<Potion> potions = new List<Potion>();
+        List<TimeCrystal> crystals = new List<TimeCrystal>();
         string input;
-        enum items {POTION, TIMECRYSTAL };
         Node currentNode, lastNode;
         
         //Node location;
@@ -77,14 +75,14 @@ namespace ConsoleApplication1
         }
 
 
-        void UseItem(items i)
+        void UseItem(Item i)
         {
-            if(i == items.POTION)
+            if(i.GetType() == typeof(Potion))
             {
-                if (potions > 0)
+                if (potions.Count > 0)
                 {
-                    potions--;
-                    HP = Math.Min(HP + healAmount, MaxHP);
+                    potions.RemoveAt(0);
+                    HP = Math.Min(HP + potions[0].HP, MaxHP);
                 }
             }
             else
