@@ -13,7 +13,8 @@ namespace ConsoleApplication1
         public List<Monster> pack;
         public Pack(int HP, int AP, int lowerBound, int upperBound = 0)
         {
-            //Generates a new pack of monsters. If the fourth parameter is left out, the pack size will equal that of lowerBound
+            //Generates a new pack of monsters. If the fourth parameter is left out, the pack size will equal that of lowerBound. 
+            //Else, the pack size will be a random number between lowerBound and upperBound
             {
                 Random rand = new Random();
                 int amount;

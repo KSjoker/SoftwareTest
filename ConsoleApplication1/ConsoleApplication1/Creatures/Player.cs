@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace ConsoleApplication1
 {
     class Player : Creature
@@ -21,6 +22,8 @@ namespace ConsoleApplication1
         int timeCrystals;
         string input;
         enum items {POTION, TIMECRYSTAL };
+        Node currentNode, lastNode;
+        
         //Node location;
         public Player(int hp, int maxhp, int ar)
         {
@@ -47,21 +50,24 @@ namespace ConsoleApplication1
         }
         void Attack(Pack p)
         {
-            //Not timecrystal
-            p.pack[0].HP = p.pack[0].HP - AR;
-
-            if (p.pack[0].HP < 1)
-                p.pack.RemoveAt(0);
-
-            //With timecrystal
-            for (int i = 0; i < p.pack.Count; i++)
+            if (true)//no timecrystal in use
             {
-                p.pack[i].HP = p.pack[i].HP - AR;
-            }
-            for (int i = 0; i < p.pack.Count; i++)
-            {
+                p.pack[0].HP = p.pack[0].HP - AR;
+
                 if (p.pack[0].HP < 1)
                     p.pack.RemoveAt(0);
+            }
+            else //Timecrystal in use
+            {
+                for (int i = 0; i < p.pack.Count; i++)
+                {
+                    p.pack[i].HP = p.pack[i].HP - AR;
+                }
+                for (int i = 0; i < p.pack.Count; i++)
+                {
+                    if (p.pack[0].HP < 1)
+                        p.pack.RemoveAt(0);
+                }
             }
         }
 
@@ -81,7 +87,6 @@ namespace ConsoleApplication1
                     HP = Math.Min(HP + healAmount, MaxHP);
                 }
             }
-
             else
             {
                 //use timecrystal
