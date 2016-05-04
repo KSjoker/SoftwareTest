@@ -8,6 +8,8 @@ namespace ConsoleApplication1
 {
     class Dungeon
     {
+        List<OgNode> nodes, bridges;
+
         public Dungeon(int difficulty)
         {
         }
