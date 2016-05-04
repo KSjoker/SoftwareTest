@@ -8,28 +8,47 @@ namespace ConsoleApplication1
 {
     class Pack
     {
-        /* TODO:-Implement Move
-        */
+
         public List<Monster> pack;
-        public Pack(int HP, int AP, int lowerBound, int upperBound = 0)
+        Node currentNode;
+        Random rand = new Random();
+        public Pack(Node node, int HP, int AP, int lowerBound, int upperBound = 0)
         {
             //Generates a new pack of monsters. If the fourth parameter is left out, the pack size will equal that of lowerBound. 
             //Else, the pack size will be a random number between lowerBound and upperBound
             {
-                Random rand = new Random();
+                currentNode = node;
                 int amount;
                 if (upperBound == 0)
                     amount = lowerBound;
                 else
                     amount = rand.Next(lowerBound, upperBound);
-
                 for (int i = 0; i < amount; i++)
                     pack.Add(new Monster(HP, AP));
             }
         }
         void Move()
         {
-            // Wait for nodes
+            //select a target node
+            int options = currentNode.neighbors.Count - 1;
+            Node target = currentNode.neighbors[rand.Next(options)];
+
+            //Can't go into target if it's a begin or end Node, so stop trying to  movve
+            if (target.GetType() == typeof(EndNode) || target.GetType() == typeof(BeginNode))
+                return;
+
+            //find number of monsters already present in node
+            int monstersInNode = 0;
+            for(int i = 0; i< target.monsters.Count; i++)
+                monstersInNode += target.monsters[i].Count;
+            
+
+            //If there's space for the pack, move to target
+            if(monstersInNode + this.Count < target.maxMonsters)
+            {
+                currentNode.monsters.Remove(this);
+                target.monsters.Add(this);
+            }
         }
 
         void Attack(Creature x)
@@ -40,6 +59,11 @@ namespace ConsoleApplication1
                 damage = pack[0].AR * pack.Count;
                 x.HP = x.HP - damage;
             }
+        }
+
+        public int Count
+        {
+            get { return pack.Count; }
         }
 
 

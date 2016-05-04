@@ -9,18 +9,16 @@ namespace ConsoleApplication1
 {
     class Player : Creature
     {
-        /* TODO: -Implement Move functionality
-                 -Implement Timecrystal functionality
-                 -Implement Retreat functionality
+        /* TODO: -Implement Timecrystal functionality
                  -Change Attack to work with Timecrystal
         */
 
 
-        int MaxHP;
-        List<Potion> potions = new List<Potion>();
-        List<TimeCrystal> crystals = new List<TimeCrystal>();
-        string input;
-        Node currentNode, lastNode;
+        protected int MaxHP;
+        protected List<Potion> potions = new List<Potion>();
+        protected List<TimeCrystal> crystals = new List<TimeCrystal>();
+        protected string input;
+        protected Node currentNode, lastNode;
         
         //Node location;
         public Player(int hp, int maxhp, int ar)
@@ -29,15 +27,15 @@ namespace ConsoleApplication1
             hitPoints = hp;
             attackRating = ar;
         }
-        void getCommand()
+        public virtual void getCommand()
         {
             switch (input)
             {
-                case "move": Move(); break;
+                case "move": Move(new Node(0,"Dummy")); break;
 
-                case "potion": UseItem(items.POTION); break;
+                case "potion": UseItem(potions[0]); break;
 
-                case "time": UseItem(items.TIMECRYSTAL); break;
+                case "time": UseItem(crystals[0]); break;
 
                 case " retreat": Retreat(); break;
 
@@ -46,9 +44,9 @@ namespace ConsoleApplication1
             }
 
         }
-        void Attack(Pack p)
+        protected void Attack(Pack p)
         {
-            if (true)//no timecrystal in use
+            if (!currentNode.crystalUsed)//no timecrystal in use
             {
                 p.pack[0].HP = p.pack[0].HP - AR;
 
@@ -58,9 +56,8 @@ namespace ConsoleApplication1
             else //Timecrystal in use
             {
                 for (int i = 0; i < p.pack.Count; i++)
-                {
                     p.pack[i].HP = p.pack[i].HP - AR;
-                }
+                
                 for (int i = 0; i < p.pack.Count; i++)
                 {
                     if (p.pack[0].HP < 1)
@@ -69,13 +66,14 @@ namespace ConsoleApplication1
             }
         }
 
-        void Move()
+        protected void Move(Node target)
         {
-            //Do stuff
+            lastNode = currentNode;
+            currentNode = target;
         }
 
 
-        void UseItem(Item i)
+        protected void UseItem(Item i)
         {
             if(i.GetType() == typeof(Potion))
             {
@@ -87,14 +85,31 @@ namespace ConsoleApplication1
             }
             else
             {
-                //use timecrystal
+                currentNode.crystalUsed = true;
             }
 
         }
 
-        void Retreat()
+        protected void Retreat()
         {
-            //GTFO
+            currentNode = lastNode;
+        }
+    }
+
+
+    class dummyPlayer : Player
+    {
+        public dummyPlayer(int hp, int  maxhp,int  ar): base(hp, maxhp,  ar)
+        {
+            MaxHP = maxhp;
+            hitPoints = hp;
+            attackRating = ar;
+        }
+        //Insert custom commands here
+        public override void getCommand()
+        {
+            Move(new Node(0,"Dummy"));
+            UseItem(potions[0]);
         }
     }
 }
