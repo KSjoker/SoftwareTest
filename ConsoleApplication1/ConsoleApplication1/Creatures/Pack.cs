@@ -31,7 +31,7 @@ namespace ConsoleApplication1
         {
             //select a target node
             int options = currentNode.neighbors.Count - 1;
-            Node target = currentNode.neighbors[rand.Next(options)];
+            OgNode target = currentNode.neighbors[rand.Next(options)];
 
             //Can't go into target if it's a begin or end Node, so stop trying to  movve
             if (target.GetType() == typeof(EndNode) || target.GetType() == typeof(BeginNode))
