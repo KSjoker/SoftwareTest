@@ -194,7 +194,7 @@ namespace ConsoleApplication1
 
     public abstract class OgNode
     {
-        protected int maxMonsters, nodeLevel;
+        public int maxMonsters, nodeLevel;
         public List<Item> items;
         public List<Pack> monsters;
         public List<OgNode> neighbors;
@@ -229,6 +229,7 @@ namespace ConsoleApplication1
     {
         float m;
         bool contested;
+        public bool crystalUsed;
 
         public Node(int nLevel,string nName)
         {
