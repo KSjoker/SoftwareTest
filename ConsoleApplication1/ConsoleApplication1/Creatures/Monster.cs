@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
-    class Monster : Creature
+    public class Monster : Creature
     {
         public Monster(int hp, int ar)
         {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
-    abstract class Creature
+    public abstract class Creature
     {
        protected int hitPoints;
        protected int attackRating;

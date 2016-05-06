@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
-    class Pack
+    public class Pack
     {
         /* TODO:-Implement Move
         */
