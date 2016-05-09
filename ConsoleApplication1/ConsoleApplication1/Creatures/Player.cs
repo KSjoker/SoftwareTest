@@ -18,10 +18,10 @@ namespace ConsoleApplication1
         protected List<Potion> potions = new List<Potion>();
         protected List<TimeCrystal> crystals = new List<TimeCrystal>();
         protected string input;
-        protected Node currentNode, lastNode;
+        protected OgNode currentNode, lastNode;
         
         //Node location;
-        public Player(int hp, int maxhp, int ar, ref Node begin)
+        public Player(int hp, int maxhp, int ar,  OgNode begin)
         {
             MaxHP = maxhp;
             hitPoints = hp;
@@ -47,7 +47,7 @@ namespace ConsoleApplication1
         }
         public void Attack(Pack p)
         {
-            if (!currentNode.crystalUsed)//no timecrystal in use
+            if (!((Node)currentNode).crystalUsed)//no timecrystal in use
             {
                 p.pack[0].HP = p.pack[0].HP - AR;
 
@@ -92,7 +92,7 @@ namespace ConsoleApplication1
             }
             else
             {
-                currentNode.crystalUsed = true;
+                ((Node)currentNode).crystalUsed = true;
             }
 
         }
@@ -106,11 +106,12 @@ namespace ConsoleApplication1
 
     class dummyPlayer : Player
     {
-        public dummyPlayer(int hp, int  maxhp,int  ar): base(hp, maxhp,  ar)
+        public dummyPlayer(int hp, int  maxhp,int  ar, ref OgNode n): base(hp, maxhp,  ar,n)
         {
             MaxHP = maxhp;
             hitPoints = hp;
             attackRating = ar;
+            currentNode = n;
         }
         //Insert custom commands here
         public override void getCommand()

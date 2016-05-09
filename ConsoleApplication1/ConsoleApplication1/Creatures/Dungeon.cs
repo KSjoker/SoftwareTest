@@ -234,7 +234,6 @@ namespace ConsoleApplication1
     public class Node : OgNode
     {
         float m;
-        public bool crystalUsed;
         dummyPlayer player;
         public bool contested,bplayer,crystalUsed;
 
@@ -266,6 +265,7 @@ namespace ConsoleApplication1
             player.getCommand();
             if (p.totalHealth < player.HP)
                 p.Move();
+        }
         public void Contested()
         {
             if (bplayer && monsters.Count > 0)
