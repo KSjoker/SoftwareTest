@@ -45,9 +45,21 @@ namespace ConsoleApplication1
 
             // Then add last zone with an endNode
             Add_DaimondZone(currentStart, difficulty + 1, true);
+
+            // We can now add monsters to these nodes
+            for (int i = 1; i < difficulty + 2; i++)
+            {
+                Add_MonstersToZone(zones[i]);
+            }
+                
         }
 
-        public void Add_DaimondZone(OgNode begin, int zoneLevel, bool end)
+        void Add_MonstersToZone(List<OgNode> zone)
+        {
+
+        }
+
+        void Add_DaimondZone(OgNode begin, int zoneLevel, bool end)
         {
             // Create new nodes and a bridge
             Node node1 = new Node(0, "node-" + zoneLevel.ToString() + "-" + UniqueID().ToString());
