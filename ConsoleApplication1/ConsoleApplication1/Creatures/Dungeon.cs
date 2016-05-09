@@ -187,21 +187,28 @@ namespace ConsoleApplication1
         public abstract string Name();
     }
 
-    public class BeginNode : Node 
+    public class BeginNode : OgNode 
     {
         public BeginNode()
-            : base(0,"begin")
         {
             maxMonsters = nodeLevel = 0;
+            name = "begin";
+            neighbors = new List<OgNode>();
+        }
+
+        public override string Name()
+        {
+            return name;
         }
     }
 
-    public class EndNode : Node
+    public class EndNode : OgNode
     {
         public EndNode()
-            : base(0, "end")
         {
+            name = "end";
             maxMonsters = nodeLevel = 0;
+            neighbors = new List<OgNode>();
         }
 
         public override string Name()
@@ -213,8 +220,7 @@ namespace ConsoleApplication1
     public class Node : OgNode
     {
         float m;
-        bool contested;
-        public bool crystalUsed;
+        public bool contested,player,crystalUsed;
 
         public Node(int nLevel,string nName)
         {
@@ -228,6 +234,13 @@ namespace ConsoleApplication1
         public override string Name()
         {
             return name;
+        }
+
+        public void Contested()
+        {
+            if (player && monsters.Count > 0)
+                contested = true;
+            else contested = false;
         }
     }
 
