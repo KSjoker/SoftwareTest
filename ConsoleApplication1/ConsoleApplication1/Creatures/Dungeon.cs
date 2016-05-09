@@ -208,6 +208,8 @@ namespace ConsoleApplication1
         {
             return name;
         }
+
+
     }
 
     public class Node : OgNode
@@ -215,6 +217,7 @@ namespace ConsoleApplication1
         float m;
         bool contested;
         public bool crystalUsed;
+        dummyPlayer player;
 
         public Node(int nLevel,string nName)
         {
@@ -228,6 +231,22 @@ namespace ConsoleApplication1
         public override string Name()
         {
             return name;
+        }
+
+        public void doCombat(Pack p)
+        {
+            while (player.HP > 0 && p.Count > 0)
+                doCombatRound(p);
+        }
+
+        public void doCombatRound(Pack p)
+        {
+            player.getCommand();
+            player.Attack(p);
+            p.Attack(player);
+            player.getCommand();
+            if (p.totalHealth < player.HP)
+                p.Move();
         }
     }
 

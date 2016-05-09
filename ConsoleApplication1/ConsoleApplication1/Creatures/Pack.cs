@@ -27,7 +27,7 @@ namespace ConsoleApplication1
                     pack.Add(new Monster(HP, AP));
             }
         }
-        void Move()
+        public void Move()
         {
             //select a target node
             int options = currentNode.neighbors.Count - 1;
@@ -51,7 +51,7 @@ namespace ConsoleApplication1
             }
         }
 
-        void Attack(Creature x)
+        public void Attack(Creature x)
         {
             int damage;
             if (pack.Count > 0)
@@ -66,6 +66,18 @@ namespace ConsoleApplication1
             get { return pack.Count; }
         }
 
+        public int totalHealth
+        {
+            get
+            {
+                int total = 0;
+
+                for (int i = 0; i < pack.Count; i++)
+                    total += pack[i].HP;
+
+                return total;
+            }
+        }
 
     }
 }

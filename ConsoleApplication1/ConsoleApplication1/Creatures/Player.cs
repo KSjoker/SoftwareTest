@@ -13,7 +13,7 @@ namespace ConsoleApplication1
                  -Change Attack to work with Timecrystal
         */
 
-
+        protected int KillPoint=0;
         protected int MaxHP;
         protected List<Potion> potions = new List<Potion>();
         protected List<TimeCrystal> crystals = new List<TimeCrystal>();
@@ -21,11 +21,12 @@ namespace ConsoleApplication1
         protected Node currentNode, lastNode;
         
         //Node location;
-        public Player(int hp, int maxhp, int ar)
+        public Player(int hp, int maxhp, int ar, ref Node begin)
         {
             MaxHP = maxhp;
             hitPoints = hp;
             attackRating = ar;
+            currentNode = begin;
         }
         public virtual void getCommand()
         {
@@ -44,24 +45,30 @@ namespace ConsoleApplication1
             }
 
         }
-        protected void Attack(Pack p)
+        public void Attack(Pack p)
         {
             if (!currentNode.crystalUsed)//no timecrystal in use
             {
                 p.pack[0].HP = p.pack[0].HP - AR;
 
                 if (p.pack[0].HP < 1)
+                {
+                    KillPoint++;
                     p.pack.RemoveAt(0);
+                }
             }
             else //Timecrystal in use
             {
                 for (int i = 0; i < p.pack.Count; i++)
                     p.pack[i].HP = p.pack[i].HP - AR;
-                
+
                 for (int i = 0; i < p.pack.Count; i++)
                 {
                     if (p.pack[0].HP < 1)
+                    {
+                        KillPoint++;
                         p.pack.RemoveAt(0);
+                    }
                 }
             }
         }
