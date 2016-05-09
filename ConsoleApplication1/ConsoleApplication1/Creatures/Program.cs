@@ -15,10 +15,10 @@ namespace ConsoleApplication1
             dungeon = new Dungeon(1);
 
             // Displaying every node in the dungeon
-            foreach (Node node in dungeon.nodes)
+            foreach (OgNode node in dungeon.nodes)
             {
                 Console.WriteLine("CurrentNode: " + node.Name());
-                foreach (Node neighbor in node.neighbors)
+                foreach (OgNode neighbor in node.neighbors)
                 {
                     Console.WriteLine("Neighbors are: " + neighbor.Name());
                 }
@@ -30,7 +30,7 @@ namespace ConsoleApplication1
             OgNode to = dungeon.endNode;
             List<OgNode> shortestPath = dungeon.shortestPath(from, to);
             Console.WriteLine("Shortest Path from " + from.Name() + " to " + to.Name() + " is");
-            foreach (Node node in shortestPath)
+            foreach (OgNode node in shortestPath)
             {
                 Console.WriteLine("Node: " + node.Name());
             }
@@ -46,10 +46,10 @@ namespace ConsoleApplication1
 
             // Testing destroying of bridge
             dungeon.BridgeDestroy(dungeon.bridges[1]);
-            foreach (Node node in dungeon.nodes)
+            foreach (OgNode node in dungeon.nodes)
             {
                 Console.WriteLine("CurrentNode: " + node.Name());
-                foreach (Node neighbor in node.neighbors)
+                foreach (OgNode neighbor in node.neighbors)
                 {
                     Console.WriteLine("Neighbors are: " + neighbor.Name());
                 }
@@ -58,10 +58,10 @@ namespace ConsoleApplication1
 
             foreach (List<OgNode> list in dungeon.zones)
             {
-                foreach (Node node in list)
+                foreach (OgNode node in list)
                 {
                     Console.WriteLine("CurrentNode: " + node.Name());
-                    foreach (Node neighbor in node.neighbors)
+                    foreach (OgNode neighbor in node.neighbors)
                     {
                         Console.WriteLine("Neighbors are: " + neighbor.Name());
                     }

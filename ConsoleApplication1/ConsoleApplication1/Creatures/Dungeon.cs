@@ -45,9 +45,21 @@ namespace ConsoleApplication1
 
             // Then add last zone with an endNode
             Add_DaimondZone(currentStart, difficulty + 1, true);
+
+            // We can now add monsters to these nodes
+            for (int i = 1; i < difficulty + 2; i++)
+            {
+                Add_MonstersToZone(zones[i]);
+            }
+                
         }
 
-        public void Add_DaimondZone(OgNode begin, int zoneLevel, bool end)
+        void Add_MonstersToZone(List<OgNode> zone)
+        {
+
+        }
+
+        void Add_DaimondZone(OgNode begin, int zoneLevel, bool end)
         {
             // Create new nodes and a bridge
             Node node1 = new Node(0, "node-" + zoneLevel.ToString() + "-" + UniqueID().ToString());
@@ -187,21 +199,28 @@ namespace ConsoleApplication1
         public abstract string Name();
     }
 
-    public class BeginNode : Node 
+    public class BeginNode : OgNode 
     {
         public BeginNode()
-            : base(0,"begin")
         {
             maxMonsters = nodeLevel = 0;
+            name = "begin";
+            neighbors = new List<OgNode>();
+        }
+
+        public override string Name()
+        {
+            return name;
         }
     }
 
-    public class EndNode : Node
+    public class EndNode : OgNode
     {
         public EndNode()
-            : base(0, "end")
         {
+            name = "end";
             maxMonsters = nodeLevel = 0;
+            neighbors = new List<OgNode>();
         }
 
         public override string Name()
@@ -218,6 +237,7 @@ namespace ConsoleApplication1
         bool contested;
         public bool crystalUsed;
         dummyPlayer player;
+        public bool contested,bplayer,crystalUsed;
 
         public Node(int nLevel,string nName)
         {
@@ -247,6 +267,11 @@ namespace ConsoleApplication1
             player.getCommand();
             if (p.totalHealth < player.HP)
                 p.Move();
+        public void Contested()
+        {
+            if (bplayer && monsters.Count > 0)
+                contested = true;
+            else contested = false;
         }
     }
 
