@@ -45,7 +45,7 @@ namespace ConsoleApplication1
             Console.WriteLine("");
 
             // Testing destroying of bridge
-            dungeon.destroy(dungeon.bridges[1]);
+            dungeon.BridgeDestroy(dungeon.bridges[1]);
             foreach (Node node in dungeon.nodes)
             {
                 Console.WriteLine("CurrentNode: " + node.Name());
@@ -54,6 +54,19 @@ namespace ConsoleApplication1
                     Console.WriteLine("Neighbors are: " + neighbor.Name());
                 }
                 Console.WriteLine("");
+            }
+
+            foreach (List<OgNode> list in dungeon.zones)
+            {
+                foreach (Node node in list)
+                {
+                    Console.WriteLine("CurrentNode: " + node.Name());
+                    foreach (Node neighbor in node.neighbors)
+                    {
+                        Console.WriteLine("Neighbors are: " + neighbor.Name());
+                    }
+                    Console.WriteLine("");
+                }
             }
 
             Console.ReadLine();

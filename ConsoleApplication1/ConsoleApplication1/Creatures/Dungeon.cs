@@ -84,7 +84,8 @@ namespace ConsoleApplication1
             // Add nodes to own zone
             zones[zoneLevel].Add(node1);
             zones[zoneLevel].Add(node2);
-            zones[zoneLevel].Add(bridge);
+            if(!end)
+                zones[zoneLevel].Add(bridge);
         }
 
         public List<OgNode> shortestPath(OgNode start, OgNode end)
@@ -149,47 +150,31 @@ namespace ConsoleApplication1
         // This method is kinda messy and not efficient at all
         // However is does the job; it removes all certain node references from every list where this reference is present
         // Unfortunately, references are copied when added to a list. So we need to check multiple lists
-        public void destroy(OgNode bridge)
-        {
-            int bridgeLevel = level(bridge);
+        public void BridgeDestroy(OgNode bridge){
 
-            // We can remove the beginNode from nodes immediately
-            nodes.Remove(beginNode); 
-            foreach (OgNode node in nodes)
-                node.neighbors.Remove(beginNode);
+            foreach (OgNode neighbor in bridge.neighbors)
+                neighbor.neighbors.Remove(bridge);
+            
 
-            List<OgNode> nodesToRemove = new List<OgNode>(); // List of nodes we need to destroy
-
-            //If we know the bridge level we can delete every zone for that bridge
-            for (int i = 1; i <= bridgeLevel; i++)
+            for (int i = 1; i <= level(bridge); i++)
             {
-                foreach(OgNode node in zones[i])
-                {
-                    nodesToRemove.Add(node); //Copy referencen of nodes in current zone that need to be destroyed
-                }
-
                 // Remove every node of the current zone in nodes and zones
                 // And delete every node of the current zone in every nodes's neighbors
-                foreach(OgNode removedNode in nodesToRemove)
-                {
+                foreach (OgNode removedNode in zones[i])
                     nodes.Remove(removedNode);
-                    zones[i].Remove(removedNode);
-
-                    foreach (OgNode node in nodes)
-                        node.neighbors.Remove(removedNode);
-                }
-
-                // We have destroyed every nodes in this zone, so we can now clear the nodesToRemove list
-                nodesToRemove.Clear();
-
+                
                 // Delete the bridge of this zone as well
                 bridges[i] = null;
+                zones[i] = new List<OgNode>();
             }
+            nodes.Remove(beginNode);
+            beginNode = null;
         }
 
         int UniqueID() {
             ID++;
-            return ID - 1; }
+            return ID - 1; 
+        }
     }
 
     public abstract class OgNode
@@ -234,7 +219,7 @@ namespace ConsoleApplication1
         public Node(int nLevel,string nName)
         {
             nodeLevel = nLevel;
-            m = 0.9f;
+            m = 1.0f;
             maxMonsters = (int)m*(nodeLevel+1);
             name = nName;
             neighbors = new List<OgNode>();
@@ -243,6 +228,14 @@ namespace ConsoleApplication1
         public override string Name()
         {
             return name;
+        }
+    }
+
+    public class NillNode : OgNode
+    {
+        public override string Name()
+        {
+            return "Nill";
         }
     }
 }
