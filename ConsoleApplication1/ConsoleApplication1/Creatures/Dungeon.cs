@@ -234,7 +234,6 @@ namespace ConsoleApplication1
     public class Node : OgNode
     {
         float m;
-        bool contested;
         public bool crystalUsed;
         dummyPlayer player;
         public bool contested,bplayer,crystalUsed;
