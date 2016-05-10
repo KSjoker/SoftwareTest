@@ -44,30 +44,78 @@ namespace ConsoleApplication1
 
             Console.WriteLine("");
 
-            // Testing destroying of bridge
-            dungeon.BridgeDestroy(dungeon.bridges[1]);
-            foreach (OgNode node in dungeon.nodes)
+            //// Testing destroying of bridge
+            //dungeon.BridgeDestroy(dungeon.bridges[1]);
+            //foreach (OgNode node in dungeon.nodes)
+            //{
+            //    Console.WriteLine("CurrentNode: " + node.Name());
+            //    foreach (OgNode neighbor in node.neighbors)
+            //    {
+            //        Console.WriteLine("Neighbors are: " + neighbor.Name());
+            //    }
+            //    Console.WriteLine("");
+            //}
+
+            // Testing monsterCount
+            foreach (List<OgNode> zone in dungeon.zones)
             {
-                Console.WriteLine("CurrentNode: " + node.Name());
-                foreach (OgNode neighbor in node.neighbors)
+                int total = 0;
+                foreach (OgNode node in zone)
                 {
-                    Console.WriteLine("Neighbors are: " + neighbor.Name());
+                    foreach (Pack pack in node.monsters)
+                    {
+                        Console.WriteLine(node.Name() + " Numbers of Monsters = " + pack.Count.ToString());
+                        total = total + pack.Count;
+                    }
                 }
-                Console.WriteLine("");
+                Console.WriteLine("total = " + total.ToString());
             }
 
-            foreach (List<OgNode> list in dungeon.zones)
+            Console.WriteLine(" ");
+
+            // Testing items
+            int totalHP = 0;
+            foreach (List<OgNode> zone in dungeon.zones)
             {
-                foreach (OgNode node in list)
+                foreach (OgNode node in zone)
                 {
-                    Console.WriteLine("CurrentNode: " + node.Name());
-                    foreach (OgNode neighbor in node.neighbors)
+                    foreach (Item item in node.items)
                     {
-                        Console.WriteLine("Neighbors are: " + neighbor.Name());
+                        if (item.GetType() == typeof(Potion))
+                            totalHP = totalHP + 20;
                     }
-                    Console.WriteLine("");
                 }
             }
+            Console.WriteLine("total HP player + potions = " + totalHP.ToString());
+
+            // Monster HP
+            int totalHPmonsters = 0;
+            foreach (List<OgNode> zone in dungeon.zones)
+            {
+                foreach (OgNode node in zone)
+                {
+                    foreach (Pack pack in node.monsters)
+                    {
+                        foreach (Monster monster in pack.pack)
+                            totalHPmonsters = totalHPmonsters + monster.HP;
+                    }
+                }
+            }
+
+            Console.WriteLine("total HP monsters = " + totalHPmonsters.ToString());
+
+            //foreach (List<OgNode> list in dungeon.zones)
+            //{
+            //    foreach (OgNode node in list)
+            //    {
+            //        Console.WriteLine("CurrentNode: " + node.Name());
+            //        foreach (OgNode neighbor in node.neighbors)
+            //        {
+            //            Console.WriteLine("Neighbors are: " + neighbor.Name());
+            //        }
+            //        Console.WriteLine("");
+            //    }
+            //}
 
             Console.ReadLine();
         }

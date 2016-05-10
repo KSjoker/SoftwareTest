@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
-    class Player : Creature
+    public class Player : Creature
     {
         /* TODO: -Implement Timecrystal functionality
                  -Change Attack to work with Timecrystal
@@ -15,7 +15,7 @@ namespace ConsoleApplication1
 
         protected int KillPoint=0;
         protected int MaxHP;
-        protected List<Potion> potions = new List<Potion>();
+        public List<Potion> potions = new List<Potion>();
         protected List<TimeCrystal> crystals = new List<TimeCrystal>();
         protected string input;
         protected OgNode currentNode, lastNode;

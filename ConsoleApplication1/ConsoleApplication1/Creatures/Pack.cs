@@ -16,17 +16,18 @@ namespace ConsoleApplication1
         {
             //Generates a new pack of monsters. If the fourth parameter is left out, the pack size will equal that of lowerBound. 
             //Else, the pack size will be a random number between lowerBound and upperBound
-            {
-                currentNode = node;
-                int amount;
-                if (upperBound == 0)
-                    amount = lowerBound;
-                else
-                    amount = rand.Next(lowerBound, upperBound);
-                for (int i = 0; i < amount; i++)
-                    pack.Add(new Monster(HP, AP));
-            }
+            pack = new List<Monster>();
+
+            currentNode = node;
+            int amount;
+            if (upperBound == 0)
+                amount = lowerBound;
+            else
+                amount = rand.Next(lowerBound, upperBound);
+            for (int i = 0; i < amount; i++)
+                pack.Add(new Monster(HP, AP));
         }
+
         public void Move()
         {
             //select a target node

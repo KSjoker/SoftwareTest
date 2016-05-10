@@ -15,7 +15,9 @@ namespace ConsoleApplication1
         public EndNode endNode = new EndNode();
         int ID;
 
-        public Dungeon(int difficulty)
+        Random random = new Random();
+
+        public Dungeon(int difficulty, int currentHP = 0)
         {
             //Every Node (which is not a begin, bridge or end node) will be named as follows:
             // node-"zone level"-"ID"
@@ -47,16 +49,101 @@ namespace ConsoleApplication1
             Add_DaimondZone(currentStart, difficulty + 1, true);
 
             // We can now add monsters to these nodes
+            int totalMonsters = 10 * difficulty;
+            int constant = (difficulty + 2) * (difficulty + 1);
+            double rest = 0;
+
             for (int i = 1; i < difficulty + 2; i++)
+                rest = Add_MonstersToZone(i, totalMonsters, constant, rest);
+
+            // After the monsters we can add items to the dungeon
+            int totalHPmonsters = 0;
+            foreach (List<OgNode> zone in zones)
             {
-                Add_MonstersToZone(zones[i]);
+                foreach (OgNode node in zone)
+                {
+                    foreach (Pack pack in node.monsters)
+                    {
+                        foreach (Monster monster in pack.pack)
+                            totalHPmonsters = totalHPmonsters + monster.HP;
+                    }
+                }
             }
-                
+
+            int totalHPplayer = currentHP;
+            int HPtoAdd = totalHPmonsters - totalHPplayer;
+
+            //Adding items
+            for (int i = 1; i < difficulty + 2; i++)
+                HPtoAdd = HPtoAdd - Add_Items(i, HPtoAdd);
+
         }
 
-        void Add_MonstersToZone(List<OgNode> zone)
+        int Add_Items(int zone, int HPtoAdd)
         {
+            int HPAdded = 0;
 
+            // 25% chance foreach node to contain a tymecrystal
+            // 50% chance foreach node to contain a potion
+            foreach (OgNode node in zones[zone])
+            {
+                if (random.Next(1, 5) == 1)
+                    node.items.Add(new TimeCrystal());
+
+                int health = 20;
+                if ((HPtoAdd - health) >= 0 && random.Next(1, 3) == 1)
+                {
+                    node.items.Add(new Potion(health));
+                    HPAdded = HPAdded + health;
+                    HPtoAdd = HPtoAdd - health;
+                }
+            }
+
+            return HPAdded;
+
+        }
+        double Add_MonstersToZone(int zone, int totalMonst, int constant, double rest)
+        {
+            double monstersInThisZone = (2 * zone * totalMonst) / (float)constant;
+            int monstersToAdd = (int)monstersInThisZone;
+            rest = rest + (monstersInThisZone - monstersToAdd);
+            
+            if (rest >= 0.99f) { rest = 1; }
+            if (rest >= 1.0f)
+            {
+                monstersToAdd++;
+                rest--;
+            }
+
+            //Adding the monsters
+            int currentlyAdded = 0;
+            while (currentlyAdded != monstersToAdd)
+            {
+                currentlyAdded = currentlyAdded + addMonster(zone, monstersToAdd, currentlyAdded);
+            }
+
+            return rest;
+        }
+
+        int addMonster(int zone, int toAdd, int added)
+        {
+            int totalAdded = 0;
+            toAdd = toAdd - added;
+
+            foreach (Node node in zones[zone])
+            {
+                if (toAdd == 0)
+                    break;
+
+                Pack newPack = new Pack(node, 10, 10, 1, toAdd + 1);
+                node.monsters.Add(newPack);
+
+                int monstersAdded = newPack.pack.Count;
+                toAdd = toAdd - monstersAdded;
+                totalAdded = totalAdded + monstersAdded;
+            }
+
+            return totalAdded;
         }
 
         void Add_DaimondZone(OgNode begin, int zoneLevel, bool end)
@@ -144,19 +231,8 @@ namespace ConsoleApplication1
             return null;
         }
 
-        public int level(OgNode node)
-        {
-            string name = node.Name();
-            if (name[1] == 'r') //If the second letter is 'r', we know it's a bridge 
-            {
-                string[] splitName = name.Split('-');
-                int level;
-                if (Int32.TryParse(splitName[1], out level))
-                    return level;
-            }
-
-            // else we now it's node of level 0
-            return 0;
+        public int level(OgNode node) {
+            return node.nodeLevel;
         }
 
         // This method is kinda messy and not efficient at all
@@ -166,7 +242,6 @@ namespace ConsoleApplication1
 
             foreach (OgNode neighbor in bridge.neighbors)
                 neighbor.neighbors.Remove(bridge);
-            
 
             for (int i = 1; i <= level(bridge); i++)
             {
@@ -179,6 +254,7 @@ namespace ConsoleApplication1
                 bridges[i] = null;
                 zones[i] = new List<OgNode>();
             }
+
             nodes.Remove(beginNode);
             beginNode = null;
         }
@@ -240,10 +316,12 @@ namespace ConsoleApplication1
         public Node(int nLevel,string nName)
         {
             nodeLevel = nLevel;
-            m = 1.0f;
+            m = 20.0f;
             maxMonsters = (int)m*(nodeLevel+1);
             name = nName;
             neighbors = new List<OgNode>();
+            monsters = new List<Pack>();
+            items = new List<Item>();
         }
 
         public override string Name()
