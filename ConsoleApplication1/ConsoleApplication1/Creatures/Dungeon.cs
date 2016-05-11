@@ -9,11 +9,11 @@ namespace ConsoleApplication1
     public class Dungeon
     {
         public List<OgNode> nodes = new List<OgNode>(); //List of every node in the graph
-        public List<OgNode>[] zones; //List of zones
+        public List<OgNode>[] zones; //List of zones in the graph
         public OgNode[] bridges; // Array of bridges
         public BeginNode beginNode = new BeginNode();
         public EndNode endNode = new EndNode();
-        int ID;
+        int ID; // ID for every node
 
         Random random = new Random();
 
@@ -30,7 +30,7 @@ namespace ConsoleApplication1
             // We want our bridges in one array for quick look-up
             bridges = new OgNode[difficulty + 1]; // We don't use bridges[0]. Memory waste yes, but it's more easy to work with
 
-            // We want our zones in seperately
+            // We want our zones in organized as well
             zones = new List<OgNode>[difficulty + 2]; //+2 because of the end-zone (= highest bridge level + 1)
             for (int i = 0; i < difficulty + 2; i++)
                 zones[i] = new List<OgNode>(); //create a new list on zonelevel index
@@ -136,7 +136,9 @@ namespace ConsoleApplication1
                     break;
 
                 Pack newPack = new Pack(node, 10, 10, 1, toAdd + 1);
-                node.monsters.Add(newPack);
+
+                if (newPack.Count + node.monsterAmount <= node.maxMonsters)
+                    node.AddMonsters(newPack);
 
                 int monstersAdded = newPack.pack.Count;
                 toAdd = toAdd - monstersAdded;
@@ -235,9 +237,6 @@ namespace ConsoleApplication1
             return node.nodeLevel;
         }
 
-        // This method is kinda messy and not efficient at all
-        // However is does the job; it removes all certain node references from every list where this reference is present
-        // Unfortunately, references are copied when added to a list. So we need to check multiple lists
         public void BridgeDestroy(OgNode bridge){
 
             foreach (OgNode neighbor in bridge.neighbors)
@@ -312,6 +311,7 @@ namespace ConsoleApplication1
         float m;
         dummyPlayer player;
         public bool contested,bplayer,crystalUsed;
+        public int monsterAmount;
 
         public Node(int nLevel,string nName)
         {
@@ -322,6 +322,7 @@ namespace ConsoleApplication1
             neighbors = new List<OgNode>();
             monsters = new List<Pack>();
             items = new List<Item>();
+            monsterAmount = 0;
         }
 
         public override string Name()
@@ -349,6 +350,12 @@ namespace ConsoleApplication1
             if (bplayer && monsters.Count > 0)
                 contested = true;
             else contested = false;
+        }
+
+        public void AddMonsters(Pack newPack)
+        {
+            monsters.Add(newPack);
+            monsterAmount = monsterAmount + newPack.Count;
         }
     }
 
