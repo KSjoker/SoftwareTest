@@ -92,6 +92,7 @@ namespace ConsoleApplication1
             }
             else
             {
+                if(currentNode.Name() != "begin" && currentNode.Name() != "end")
                 ((Node)currentNode).crystalUsed = true;
             }
 
