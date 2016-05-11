@@ -282,7 +282,7 @@ namespace ConsoleApplication1
         public BeginNode()
         {
             maxMonsters = nodeLevel = 0;
-            name = "begin";
+            name = "Begin";
             neighbors = new List<OgNode>();
         }
 
@@ -296,7 +296,7 @@ namespace ConsoleApplication1
     {
         public EndNode()
         {
-            name = "end";
+            name = "End";
             maxMonsters = nodeLevel = 0;
             neighbors = new List<OgNode>();
         }
@@ -312,7 +312,6 @@ namespace ConsoleApplication1
     public class Node : OgNode
     {
         float m;
-        dummyPlayer player;
         public bool contested,bplayer,crystalUsed;
         public int monsterAmount;
 
@@ -333,18 +332,18 @@ namespace ConsoleApplication1
             return name;
         }
 
-        public void doCombat(Pack p)
+        public void doCombat(Pack p,dummyPlayer player)
         {
             while (player.HP > 0 && p.Count > 0)
-                doCombatRound(p);
+                doCombatRound(p,player);
         }
 
-        public void doCombatRound(Pack p)
+        public void doCombatRound(Pack p,dummyPlayer player)
         {
-            player.getCommand();
+            //player.getCommand();
             player.Attack(p);
             p.Attack(player);
-            player.getCommand();
+            //player.getCommand();
             if (p.totalHealth < player.HP)
                 p.Move();
         }
@@ -364,9 +363,14 @@ namespace ConsoleApplication1
 
     public class NillNode : OgNode
     {
+		public NillNode()
+		{
+			name = "Nill";
+		}
+		
         public override string Name()
         {
-            return "Nill";
+            return name;
         }
     }
 }
