@@ -12,7 +12,7 @@ namespace ConsoleApplication1
 
         static void Main(string[] args)
         {
-            dungeon = new Dungeon(1);
+            dungeon = new Dungeon(2);
 
             // Displaying every node in the dungeon
             foreach (OgNode node in dungeon.nodes)
@@ -38,7 +38,7 @@ namespace ConsoleApplication1
             Console.WriteLine("");
 
             // Display level of any node
-            OgNode randomNode = dungeon.bridges[1];
+            OgNode randomNode = dungeon.beginNode;
             int level = dungeon.level(randomNode);
             Console.WriteLine("level of node: " + randomNode.Name() + " = " + level.ToString());
 
