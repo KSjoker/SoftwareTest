@@ -98,7 +98,7 @@ namespace ConsoleApplication1
     }
 
 
-    class dummyPlayer : Player
+    public class dummyPlayer : Player
     {
         public dummyPlayer(int hp, int  maxhp,int  ar, ref OgNode n): base(hp, maxhp,  ar,n)
         {
