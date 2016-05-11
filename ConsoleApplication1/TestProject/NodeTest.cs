@@ -105,15 +105,49 @@ namespace TestProject
             Assert.AreEqual(contested4, false);
         }
 
-        //[TestMethod]
+        [TestMethod]
         public void NodeTest_DoCombat()
         {
             Node node = new Node(0, "Hello");
+            Node neighbor = new Node(0, "NEighbour");
+            node.neighbors.Add(neighbor);
+            neighbor.neighbors.Add(node);
             OgNode oNode = node;
-            dummyPlayer player = new dummyPlayer(10,10,4,ref oNode);
+            dummyPlayer player = new dummyPlayer(100,100,4,ref oNode);
             Pack monsterp1 = new Pack(node,5,1,2,5);
             node.doCombat(monsterp1, player);
 
+            bool check = node.monsters.Count == 0;
+            Assert.AreEqual(check, true);
         }
+
+        /*[TestMethod]
+        public void NodeTest_DoCombatUntilDeath()
+        {
+            Node node = new Node(0, "Hello");
+            Node neighbor = new Node(0, "NEighbour");
+            node.neighbors.Add(neighbor);
+            neighbor.neighbors.Add(node);
+            OgNode oNode = node;
+            dummyPlayer player = new dummyPlayer(100, 100, 4, ref oNode);
+            Pack monsterp1 = new Pack(node, 5, 1, 2, 5);
+            while (monsterp1.totalHealth != 0)
+            {
+                if(node.contested)
+                    node.doCombat(monsterp1, player);
+
+                if(neighbor.contested)
+                    neighbor.doCombat(monsterp1, player);
+
+                if (!node.contested && !neighbor.contested)
+                {
+                    OgNode neighboring = (player.currentNode.neighbors.ToArray())[0];
+                    player.Move((Node)neighboring);
+                }
+            }
+
+            bool check = node.monsters.Count == 0 && neighbor.monsters.Count == 0;
+            Assert.AreEqual(check, true);
+        }*/
     }
 }
