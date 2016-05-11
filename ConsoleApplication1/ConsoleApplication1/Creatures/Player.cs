@@ -13,37 +13,24 @@ namespace ConsoleApplication1
                  -Change Attack to work with Timecrystal
         */
 
-        protected int KillPoint=0;
-        protected int MaxHP;
+        public int killpoint=0;
+        public int maxHP;
         public List<Potion> potions = new List<Potion>();
-        protected List<TimeCrystal> crystals = new List<TimeCrystal>();
+        public List<TimeCrystal> crystals = new List<TimeCrystal>();
         protected string input;
-        protected OgNode currentNode, lastNode;
+        public OgNode currentNode, lastNode;
         
         //Node location;
         public Player(int hp, int maxhp, int ar,  OgNode begin)
         {
-            MaxHP = maxhp;
+            maxHP = maxhp;
             hitPoints = hp;
             attackRating = ar;
             currentNode = begin;
         }
         public virtual void getCommand()
         {
-            switch (input)
-            {
-                case "move": Move(new Node(0,"Dummy")); break;
-
-                case "potion": UseItem(potions[0]); break;
-
-                case "time": UseItem(crystals[0]); break;
-
-                case " retreat": Retreat(); break;
-
-                case "attack": break;
-
-            }
-
+           
         }
         public void Attack(Pack p)
         {
@@ -53,54 +40,60 @@ namespace ConsoleApplication1
 
                 if (p.pack[0].HP < 1)
                 {
-                    KillPoint++;
+                    killpoint++;
                     p.pack.RemoveAt(0);
                 }
             }
             else //Timecrystal in use
             {
-                for (int i = 0; i < p.pack.Count; i++)
+                for (int i = 0; i < p.Count; i++)
                     p.pack[i].HP = p.pack[i].HP - AR;
 
-                for (int i = 0; i < p.pack.Count; i++)
+                for (int i = 0; i < p.pack.Count;)
                 {
                     if (p.pack[0].HP < 1)
                     {
-                        KillPoint++;
+                        killpoint++;
                         p.pack.RemoveAt(0);
                     }
+                    else
+                        i++;
                 }
             }
         }
 
-        protected void Move(Node target)
+        public void Move(Node target)
         {
             lastNode = currentNode;
             currentNode = target;
         }
 
 
-        protected void UseItem(Item i)
+        public void UseItem(Item i)
         {
             if(i.GetType() == typeof(Potion))
             {
                 if (potions.Count > 0)
                 {
+                    HP = Math.Min(HP + potions[0].HP, maxHP);
                     potions.RemoveAt(0);
-                    HP = Math.Min(HP + potions[0].HP, MaxHP);
                 }
             }
-            else
+            else if(i.GetType() == typeof(TimeCrystal))
             {
                 if(currentNode.Name() != "begin" && currentNode.Name() != "end")
                 ((Node)currentNode).crystalUsed = true;
+                crystals.RemoveAt(0);
             }
 
         }
 
-        protected void Retreat()
+        public void Retreat()
         {
+            OgNode temp = currentNode;
             currentNode = lastNode;
+            lastNode = temp;
+
         }
     }
 
@@ -109,7 +102,7 @@ namespace ConsoleApplication1
     {
         public dummyPlayer(int hp, int  maxhp,int  ar, ref OgNode n): base(hp, maxhp,  ar,n)
         {
-            MaxHP = maxhp;
+            maxHP = maxhp;
             hitPoints = hp;
             attackRating = ar;
             currentNode = n;
@@ -117,8 +110,7 @@ namespace ConsoleApplication1
         //Insert custom commands here
         public override void getCommand()
         {
-            Move(new Node(0,"Dummy"));
-            UseItem(potions[0]);
+
         }
     }
 }
