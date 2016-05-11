@@ -111,7 +111,7 @@ namespace ConsoleApplication1
             int monstersToAdd = (int)monstersInThisZone;
             rest = rest + (monstersInThisZone - monstersToAdd);
             
-            if (rest >= 0.99f) { rest = 1; }
+            if (rest >= 0.99f && rest <= 1) { rest = 1; }
             if (rest >= 1.0f)
             {
                 monstersToAdd++;

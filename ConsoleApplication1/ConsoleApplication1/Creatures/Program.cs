@@ -12,7 +12,7 @@ namespace ConsoleApplication1
 
         static void Main(string[] args)
         {
-            dungeon = new Dungeon(-2);
+            dungeon = new Dungeon(5);
 
             // Displaying every node in the dungeon
             foreach (OgNode node in dungeon.nodes)
@@ -45,16 +45,16 @@ namespace ConsoleApplication1
             Console.WriteLine("");
 
             // Testing destroying of bridge
-            dungeon.BridgeDestroy(dungeon.bridges[1]);
-            foreach (OgNode node in dungeon.nodes)
-            {
-                Console.WriteLine("CurrentNode: " + node.Name());
-                foreach (OgNode neighbor in node.neighbors)
-                {
-                    Console.WriteLine("Neighbors are: " + neighbor.Name());
-                }
-                Console.WriteLine("");
-            }
+            //dungeon.BridgeDestroy(dungeon.bridges[1]);
+            //foreach (OgNode node in dungeon.nodes)
+            //{
+            //    Console.WriteLine("CurrentNode: " + node.Name());
+            //    foreach (OgNode neighbor in node.neighbors)
+            //    {
+            //        Console.WriteLine("Neighbors are: " + neighbor.Name());
+            //    }
+            //    Console.WriteLine("");
+            //}
 
             // Testing monsterCount
             foreach (List<OgNode> zone in dungeon.zones)

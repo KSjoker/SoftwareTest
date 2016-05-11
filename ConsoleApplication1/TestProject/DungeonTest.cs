@@ -38,8 +38,7 @@ namespace TestProject
             Assert.AreSame(neighbor1, dungeon.endNode);
 
             Assert.AreEqual(2, dungeon.endNode.neighbors.Count);
-            if (!dungeon.endNode.neighbors.Contains(dungeon.zones[3][0]) || !dungeon.endNode.neighbors.Contains(dungeon.zones[3][1]))
-                Assert.Fail();
+            Assert.IsTrue((dungeon.endNode.neighbors.Contains(dungeon.zones[3][0]) && dungeon.endNode.neighbors.Contains(dungeon.zones[3][1])));
         }
 
         [TestMethod]
@@ -111,6 +110,73 @@ namespace TestProject
         {
             Dungeon dungeon = new Dungeon(-2);
         }
+
+        [TestMethod]
+        public void DungeonMonsterBalansTest()
+        {
+            int difficulty = 100;
+            int totalMonsters = 10 * difficulty;
+            int constant = (difficulty + 2) * (difficulty + 1);
+
+            Dungeon dungeon = new Dungeon(difficulty);
+
+            int total = 0;
+            for(int i = 1; i <= difficulty + 1; i++)
+            {
+                int monstersInZone = 0;
+
+                foreach(Node node in dungeon.zones[i])
+                    monstersInZone = monstersInZone + node.monsterAmount;
+
+                double monstersInThisZone = (2 * i * totalMonsters) / (float)constant;
+                int monstersToAdd = (int)monstersInThisZone;
+
+                Assert.IsTrue((monstersToAdd == monstersInZone || (monstersToAdd + 1) == monstersInZone));
+
+                total = total + monstersInZone;
+            }
+
+            Assert.AreEqual(totalMonsters, total);
+        }
+
+        [TestMethod]
+        public void DungeonHPTest()
+        {
+            Dungeon dungeon = new Dungeon(100, 300); // 300 = current player HP + potions in his bag
+
+            // Sum of all potions
+            int totalHP = 0;
+            foreach (List<OgNode> zone in dungeon.zones)
+            {
+                foreach (OgNode node in zone)
+                {
+                    foreach (Item item in node.items)
+                    {
+                        if (item.GetType() == typeof(Potion))
+                            totalHP = totalHP + 20;
+                    }
+                }
+            }
+
+            totalHP = totalHP + 300;
+
+            // total monster HP
+            int totalHPmonsters = 0;
+            foreach (List<OgNode> zone in dungeon.zones)
+            {
+                foreach (OgNode node in zone)
+                {
+                    foreach (Pack pack in node.monsters)
+                    {
+                        foreach (Monster monster in pack.pack)
+                            totalHPmonsters = totalHPmonsters + monster.HP;
+                    }
+                }
+            }
+
+            Assert.IsTrue(totalHP <= totalHPmonsters);
+        }
+
 
     }
 }
