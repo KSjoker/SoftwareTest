@@ -91,11 +91,14 @@ namespace ConsoleApplication1
                     node.items.Add(new TimeCrystal());
 
                 int health = 20;
-                if ((HPtoAdd - health) >= 0 && random.Next(1, 3) == 1)
+                if ((HPtoAdd - health) >= 0)
                 {
-                    node.items.Add(new Potion(health));
-                    HPAdded = HPAdded + health;
-                    HPtoAdd = HPtoAdd - health;
+                    if (random.Next(1, 3) == 1)
+                    {
+                        node.items.Add(new Potion(health));
+                        HPAdded = HPAdded + health;
+                        HPtoAdd = HPtoAdd - health;
+                    }
                 }
             }
 
