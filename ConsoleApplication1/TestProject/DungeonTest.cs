@@ -38,7 +38,7 @@ namespace TestProject
             Assert.AreSame(neighbor1, dungeon.endNode);
 
             Assert.AreEqual(2, dungeon.endNode.neighbors.Count);
-            Assert.IsTrue((dungeon.endNode.neighbors.Contains(dungeon.zones[3][0]) && dungeon.endNode.neighbors.Contains(dungeon.zones[3][1])));
+            Assert.IsTrue(dungeon.endNode.neighbors.Contains(dungeon.zones[3][0]) && dungeon.endNode.neighbors.Contains(dungeon.zones[3][1]));
         }
 
         [TestMethod]
@@ -176,7 +176,6 @@ namespace TestProject
 
             Assert.IsTrue(totalHP <= totalHPmonsters);
         }
-
 
     }
 }
