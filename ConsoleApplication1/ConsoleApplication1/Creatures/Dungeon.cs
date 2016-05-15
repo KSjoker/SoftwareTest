@@ -30,7 +30,7 @@ namespace ConsoleApplication1
             // We want our bridges in one array for quick look-up
             bridges = new OgNode[difficulty + 1]; // We don't use bridges[0]. Memory waste yes, but it's more easy to work with
 
-            // We want our zones in organized as well
+            // We want our zones organized as well
             zones = new List<OgNode>[difficulty + 2]; //+2 because of the end-zone (= highest bridge level + 1)
             for (int i = 0; i < difficulty + 2; i++)
                 zones[i] = new List<OgNode>(); //create a new list on zonelevel index
@@ -41,12 +41,12 @@ namespace ConsoleApplication1
             // First add zones
             for (int i = 1; i <= difficulty; i++)
             {
-                Add_DaimondZone(currentStart, i, false);
+                Add_DiamondZone(currentStart, i, false);
                 currentStart = bridges[i];
             }
 
             // Then add last zone with an endNode
-            Add_DaimondZone(currentStart, difficulty + 1, true);
+            Add_DiamondZone(currentStart, difficulty + 1, true);
 
             // We can now add monsters to these nodes
             int totalMonsters = 10 * difficulty;
@@ -87,13 +87,13 @@ namespace ConsoleApplication1
             // 50% chance foreach node to contain a potion
             foreach (OgNode node in zones[zone])
             {
-                if (random.Next(1, 5) == 1)
+                if (random.Next(1, 5) == 1) //Add crystal with a 25% chance of success
                     node.items.Add(new TimeCrystal());
 
                 int health = 20;
-                if ((HPtoAdd - health) >= 0)
+                if ((HPtoAdd - health) >= 0) //If we may add a potion 
                 {
-                    if (random.Next(1, 3) == 1)
+                    if (random.Next(1, 3) == 1) //Add potion with a 50% chance of success
                     {
                         node.items.Add(new Potion(health));
                         HPAdded = HPAdded + health;
@@ -105,8 +105,11 @@ namespace ConsoleApplication1
             return HPAdded;
 
         }
+
+        // This method adds monsters to a zone. It returns a "rest" value which is used to round numbers correctly (for monsterBalans)
         double Add_MonstersToZone(int zone, int totalMonst, int constant, double rest)
         {
+            //Formula
             double monstersInThisZone = (2 * zone * totalMonst) / (float)constant;
             int monstersToAdd = (int)monstersInThisZone;
             rest = rest + (monstersInThisZone - monstersToAdd);
@@ -128,6 +131,7 @@ namespace ConsoleApplication1
             return rest;
         }
 
+        // This method returns how many monsters are added to the zone
         int addMonster(int zone, int toAdd, int added)
         {
             int totalAdded = 0;
@@ -135,15 +139,15 @@ namespace ConsoleApplication1
 
             foreach (Node node in zones[zone])
             {
-                if (toAdd == 0)
+                if (toAdd == 0) //If we can't add any more monsters
                     break;
 
-                Pack newPack = new Pack(node, 10, 10, 1, toAdd + 1);
+                Pack newPack = new Pack(node, 10, 10, 1, toAdd + 1); //Create new Pack with a random number of monsters
 
-                if (newPack.Count + node.monsterAmount <= node.maxMonsters)
+                if (newPack.Count + node.monsterAmount <= node.maxMonsters) //Check node constraint (doesn't really matter actually, this "if" is always true)
                     node.AddMonsters(newPack);
 
-                int monstersAdded = newPack.pack.Count;
+                int monstersAdded = newPack.pack.Count; //Number of monsters added
                 toAdd = toAdd - monstersAdded;
                 totalAdded = totalAdded + monstersAdded;
             }
@@ -151,7 +155,7 @@ namespace ConsoleApplication1
             return totalAdded;
         }
 
-        void Add_DaimondZone(OgNode begin, int zoneLevel, bool end)
+        void Add_DiamondZone(OgNode begin, int zoneLevel, bool end)
         {
             // Create new nodes and a bridge
             Node node1 = new Node(0, "node-" + zoneLevel.ToString() + "-" + UniqueID().ToString());

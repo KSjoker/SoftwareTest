@@ -21,6 +21,7 @@ namespace ConsoleApplication1
             itemListUpdate();
         }
 
+        //Creates a dungeon
         public void nextDungeon()
         {
             if (dungeon == null)
@@ -29,6 +30,7 @@ namespace ConsoleApplication1
                 dungeon = new Dungeon(dungeon.bridges.Length, player.HP + (player.potions.Count * 20));
         }
 
+        // Updates monster list to contain all packs of monsters that currently roam the dungeon
         public void monsterListUpdate()
         {
             foreach (List<OgNode> zone in dungeon.zones)
@@ -43,6 +45,7 @@ namespace ConsoleApplication1
             }
         }
 
+        // Updates item list to contain all item that currently are scattered throughout the dungeon 
         public void itemListUpdate()
         {
             foreach (List<OgNode> zone in dungeon.zones)

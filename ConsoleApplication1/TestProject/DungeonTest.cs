@@ -8,6 +8,7 @@ namespace TestProject
     [TestClass]
     public class DungeonTest
     {
+
         [TestMethod]
         public void level_Test()
         {
@@ -22,22 +23,22 @@ namespace TestProject
         public void bridgeDestroy_Test()
         {
             Dungeon dungeon = new Dungeon(2);
-            dungeon.BridgeDestroy(dungeon.bridges[2]);
+            dungeon.BridgeDestroy(dungeon.bridges[2]); //Destroy bridge 2
 
-            Assert.AreEqual(0, dungeon.zones[1].Count);
-            Assert.AreEqual(0, dungeon.zones[2].Count);
+            Assert.AreEqual(0, dungeon.zones[1].Count); //Zone 1 should be empty now
+            Assert.AreEqual(0, dungeon.zones[2].Count); //Zone 2 should b empty now
             Assert.IsNull(dungeon.beginNode);
 
-            Assert.AreEqual(1, dungeon.zones[3][0].neighbors.Count);
-            Assert.AreEqual(1, dungeon.zones[3][1].neighbors.Count);
+            Assert.AreEqual(1, dungeon.zones[3][0].neighbors.Count); //neighbor should be only the endNode
+            Assert.AreEqual(1, dungeon.zones[3][1].neighbors.Count); //neighbor should be only the endNode
 
-            OgNode neighbor1 = dungeon.zones[3][0].neighbors[0];
-            OgNode neighbor2 = dungeon.zones[3][1].neighbors[0];
+            OgNode neighbor1 = dungeon.zones[3][0].neighbors[0]; //neighbor should be only the endNode
+            OgNode neighbor2 = dungeon.zones[3][1].neighbors[0]; //neighbor should be only the endNode
 
-            Assert.AreSame(neighbor1, neighbor2);
-            Assert.AreSame(neighbor1, dungeon.endNode);
+            Assert.AreSame(neighbor1, neighbor2); //they should be the same neighbor endNode
+            Assert.AreSame(neighbor1, dungeon.endNode); //The check
 
-            Assert.AreEqual(2, dungeon.endNode.neighbors.Count);
+            Assert.AreEqual(2, dungeon.endNode.neighbors.Count); //endNode should have 2 neighbors
             Assert.IsTrue(dungeon.endNode.neighbors.Contains(dungeon.zones[3][0]) && dungeon.endNode.neighbors.Contains(dungeon.zones[3][1]));
         }
 
@@ -61,7 +62,7 @@ namespace TestProject
         public void shortestPath_TestNotNull()
         {
             Dungeon dungeon = new Dungeon(1);
-            List<OgNode> path = dungeon.shortestPath(dungeon.bridges[1], dungeon.endNode);
+            List<OgNode> path = dungeon.shortestPath(dungeon.bridges[1], dungeon.endNode); //Path from bridge 1 to endNode
 
             Assert.AreSame(path[0], dungeon.bridges[1]);
             Assert.AreSame(path[1], dungeon.zones[2][0]);
