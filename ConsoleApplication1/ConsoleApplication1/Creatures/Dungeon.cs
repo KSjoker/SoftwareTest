@@ -271,7 +271,7 @@ namespace ConsoleApplication1
         }
     }
 
-    public abstract class OgNode
+    public abstract class OgNode//base class for all the nodes
     {
         public int maxMonsters, nodeLevel;
         public List<Item> items;
@@ -282,7 +282,7 @@ namespace ConsoleApplication1
         public bool bplayer;
     }
 
-    public class BeginNode : OgNode 
+    public class BeginNode : OgNode //starting node of the dungeon
     {
         public BeginNode()
         {
@@ -297,7 +297,7 @@ namespace ConsoleApplication1
         }
     }
 
-    public class EndNode : OgNode
+    public class EndNode : OgNode // end node of the dungeon
     {
         public EndNode()
         {
@@ -316,6 +316,7 @@ namespace ConsoleApplication1
 
     public class Node : OgNode
     {
+		//variables used to calculate maxmonster and to check for contested
         float m;
         public bool contested, crystalUsed;
         public int monsterAmount;
@@ -337,7 +338,7 @@ namespace ConsoleApplication1
             return name;
         }
 
-        public void doCombat(Pack p, Player player)
+        public void doCombat(Pack p, Player player) // method for combat for a player and a monster pack
         {
             bool end = false;
             while (player.HP > 0 && p.Count > 0 && !end)
@@ -347,7 +348,7 @@ namespace ConsoleApplication1
                 monsters.Remove(p);
         }
 
-        public bool doCombatRound(Pack p, Player player)
+        public bool doCombatRound(Pack p, Player player) // method for 1 round of combat
         {
             //player.getCommand();
             player.Attack(p);
@@ -368,21 +369,21 @@ namespace ConsoleApplication1
 
             return false;
         }
-        public void Contested()
+        public void Contested() //checks if the player and monsters are in the same node
         {
             if (bplayer && monsters.Count > 0)
                 contested = true;
             else contested = false;
         }
 
-        public void AddMonsters(Pack newPack)
+        public void AddMonsters(Pack newPack) //adds monsterpacks to the node
         {
             monsters.Add(newPack);
             monsterAmount = monsterAmount + newPack.Count;
         }
     }
 
-    public class NillNode : OgNode
+    public class NillNode : OgNode // represents a null object neighbor node. but instead of using the null object, we will use nillnode
     {
 		public NillNode()
 		{
