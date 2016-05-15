@@ -27,6 +27,7 @@ namespace ConsoleApplication1
             hitPoints = hp;
             attackRating = ar;
             currentNode = begin;
+            currentNode.bplayer = true;
         }
         public virtual void getCommand()
         {
@@ -64,8 +65,10 @@ namespace ConsoleApplication1
 
         public void Move(Node target)
         {
+            currentNode.bplayer = false;
             lastNode = currentNode;
             currentNode = target;
+            currentNode.bplayer = true;
         }
 
 
@@ -93,23 +96,6 @@ namespace ConsoleApplication1
             OgNode temp = currentNode;
             currentNode = lastNode;
             lastNode = temp;
-
-        }
-    }
-
-
-    public class dummyPlayer : Player
-    {
-        public dummyPlayer(int hp, int  maxhp,int  ar, ref OgNode n): base(hp, maxhp,  ar,n)
-        {
-            maxHP = maxhp;
-            hitPoints = hp;
-            attackRating = ar;
-            currentNode = n;
-        }
-        //Insert custom commands here
-        public override void getCommand()
-        {
 
         }
     }

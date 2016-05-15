@@ -49,6 +49,7 @@ namespace ConsoleApplication1
             {
                 currentNode.monsters.Remove(this);
                 target.monsters.Add(this);
+                currentNode = (Node)target;
             }
         }
 

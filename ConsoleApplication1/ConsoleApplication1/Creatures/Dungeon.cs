@@ -279,6 +279,7 @@ namespace ConsoleApplication1
         public List<OgNode> neighbors;
         protected string name;
         public abstract string Name();
+        public bool bplayer;
     }
 
     public class BeginNode : OgNode 
@@ -316,7 +317,7 @@ namespace ConsoleApplication1
     public class Node : OgNode
     {
         float m;
-        public bool contested,bplayer,crystalUsed;
+        public bool contested, crystalUsed;
         public int monsterAmount;
 
         public Node(int nLevel,string nName)
@@ -336,20 +337,36 @@ namespace ConsoleApplication1
             return name;
         }
 
-        public void doCombat(Pack p,dummyPlayer player)
+        public void doCombat(Pack p, Player player)
         {
-            while (player.HP > 0 && p.Count > 0)
-                doCombatRound(p,player);
+            bool end = false;
+            while (player.HP > 0 && p.Count > 0 && !end)
+                end = doCombatRound(p,player);
+
+            if (p.Count == 0)
+                monsters.Remove(p);
         }
 
-        public void doCombatRound(Pack p,dummyPlayer player)
+        public bool doCombatRound(Pack p, Player player)
         {
             //player.getCommand();
             player.Attack(p);
             p.Attack(player);
+
+            if (p.Count == 0)
+                monsters.Remove(p);
+
             //player.getCommand();
             if (p.totalHealth < player.HP)
-                p.Move();
+            {
+                if (p.totalHealth > 0)
+                {
+                    p.Move();
+                    return true;
+                }
+            }
+
+            return false;
         }
         public void Contested()
         {

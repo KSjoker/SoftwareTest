@@ -8,8 +8,6 @@ namespace ConsoleApplication1
 {
     class Program
     {
-        static Dungeon dungeon;
-
         static void Main(string[] args)
         {
         }
