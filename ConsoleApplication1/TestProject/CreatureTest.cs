@@ -19,23 +19,25 @@ namespace TestProject
             int ar = 10;
             //create player
             Player player = new Player(hp, maxhp, ar,new Node(2, "test"));
+            //Make sure player is created properly
             Assert.AreEqual(hp, player.HP);
             Assert.AreEqual(maxhp,player.maxHP);
             Assert.AreEqual(ar,player.AR);
 
+            //Check if reduction of player HP works properly
             player.HP = player.maxHP - 40;
-
             Assert.AreEqual(player.maxHP - 40,player.HP);
             Assert.AreEqual(maxhp, player.maxHP);
 
+            //Check if potion usage works properly
             player.potions.Add(new Potion(30));
-
             Assert.IsTrue(player.potions.Count == 1);
 
             player.UseItem(player.potions[0]);
             Assert.IsTrue(player.HP == maxhp-40+30);
             Assert.IsTrue(player.potions.Count == 0);
 
+            //Check if timecrystal usage works properly
             player.crystals.Add(new TimeCrystal());
             Assert.IsTrue(player.crystals.Count == 1);
 
@@ -53,14 +55,15 @@ namespace TestProject
             int ar = 10;
             int count = 6;
             int upper = 10;
+            //Check if packs are created properly
             Pack pack = new Pack(new Node(2, "test"), hp, ar, count);
 
             Assert.AreEqual(count * hp, pack.totalHealth);
             Assert.AreEqual(ar, pack.pack[0].AR);
             Assert.AreEqual(count, pack.Count);
 
-            pack = new Pack(new Node(2, "test"), hp, ar, count, upper);
-
+            //Check if randomly generated packs' size falls within given parameters
+            pack = new Pack(new Node(2, "test"), hp, ar, count, upper);  
             Assert.IsTrue(pack.Count > 5 && pack.Count < 11);
         }
 
@@ -76,14 +79,15 @@ namespace TestProject
             Pack pack = new Pack(testNode, hp, ar, count);
 
             pack.Attack(player);
-            //Check the pack deals correct damage
+            //Check if the pack deals correct damage
             Assert.AreEqual(100 - ar * count, player.HP);
 
             player.Attack(pack);
-            //Check if a creature died
+            //Check if a creature died (it should've)
             Assert.IsTrue(pack.Count == 5);
             Assert.IsTrue(player.killpoint == 1);
 
+            //Use a timeCrystal
             player.crystals.Add(new TimeCrystal());
             player.UseItem(player.crystals[0]);
             player.Attack(pack);
@@ -142,10 +146,12 @@ namespace TestProject
 
             Player player = new Player(10, 10, 10, node1);
 
+            //Check if player moves properly
             player.Move(node2);
             Assert.AreEqual(node1, player.lastNode);
             Assert.AreEqual(node2, player.currentNode);
 
+            //Check if player retreat works properly
             player.Retreat();
             Assert.AreEqual(node2, player.lastNode);
             Assert.AreEqual(node1, player.currentNode);
