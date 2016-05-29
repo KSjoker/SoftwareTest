@@ -28,21 +28,32 @@ namespace ConsoleApplication1
             attackRating = ar;
             currentNode = begin;
             currentNode.bplayer = true;
+            CollectItems(currentNode);
         }
-        public virtual void getCommand()
+        public int getCommand()
         {
-           
+            Console.WriteLine("What do you want to do? 1 = Move, 2 = Use Potion, 3 = use Time Crystal, 4 = Retreat, 5 = Continue Combat");
+            while (true)
+            {
+                int answer = int.Parse(Console.ReadLine());
+                if (answer <= 5 && answer > 0)
+                    return answer;
+                else
+                    Console.WriteLine("Please write a number between 0 and 6");
+            }
         }
         public void Attack(Pack p)
         {
             if (!((Node)currentNode).crystalUsed)//no timecrystal in use
             {
+                Console.WriteLine("Monster HP was " + p.pack[0].HP.ToString());
                 p.pack[0].HP = p.pack[0].HP - AR;
-
+                Console.WriteLine("Monster HP is now " + p.pack[0].HP.ToString());
                 if (p.pack[0].HP < 1)
                 {
                     killpoint++;
                     p.pack.RemoveAt(0);
+                    Console.WriteLine("You have killed the monster");
                 }
             }
             else //Timecrystal in use
@@ -63,14 +74,14 @@ namespace ConsoleApplication1
             }
         }
 
-        public void Move(Node target)
+        public void Move(OgNode target)
         {
             currentNode.bplayer = false;
             lastNode = currentNode;
             currentNode = target;
             currentNode.bplayer = true;
+            CollectItems(currentNode);
         }
-
 
         public void UseItem(Item i)
         {
@@ -82,7 +93,7 @@ namespace ConsoleApplication1
                     potions.RemoveAt(0);
                 }
             }
-            else if(i.GetType() == typeof(TimeCrystal))
+            else 
             {
                 if(currentNode.Name() != "begin" && currentNode.Name() != "end")
                 ((Node)currentNode).crystalUsed = true;
@@ -97,6 +108,19 @@ namespace ConsoleApplication1
             currentNode = lastNode;
             lastNode = temp;
 
+        }
+
+        public void CollectItems(OgNode node)
+        {
+            foreach(Item item in node.items)
+            {
+                if (item.GetType() == typeof(Potion))
+                    potions.Add((Potion)item);
+                else
+                    crystals.Add((TimeCrystal)item);
+            }
+
+            node.items = new List<Item>(); 
         }
     }
 }

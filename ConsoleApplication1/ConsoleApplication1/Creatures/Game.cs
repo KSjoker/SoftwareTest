@@ -10,8 +10,8 @@ namespace ConsoleApplication1
     {
         public Dungeon dungeon;
         public Player player;
-        public List<Pack> monsters = new List<Pack>();
-        public List<Item> items = new List<Item>(); 
+        public List<Pack> monsters;
+        public List<Item> items; 
 
         public Game()
         {
@@ -33,6 +33,8 @@ namespace ConsoleApplication1
         // Updates monster list to contain all packs of monsters that currently roam the dungeon
         public void monsterListUpdate()
         {
+            List<Pack> monsters = new List<Pack>(); //Not the most elegant way, but it works fine
+
             foreach (List<OgNode> zone in dungeon.zones)
             {
                 foreach (OgNode node in zone)
@@ -48,6 +50,8 @@ namespace ConsoleApplication1
         // Updates item list to contain all item that currently are scattered throughout the dungeon 
         public void itemListUpdate()
         {
+            List<Item> items = new List<Item>(); //Not the most elegant way, but it works fine
+
             foreach (List<OgNode> zone in dungeon.zones)
             {
                 foreach (OgNode node in zone)

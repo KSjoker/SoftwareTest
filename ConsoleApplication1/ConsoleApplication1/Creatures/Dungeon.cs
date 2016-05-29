@@ -25,7 +25,7 @@ namespace ConsoleApplication1
             // bridge-"zone level"
             // The Begin and End nodes are named as "begin" and "end"
 
-            int ID = 0; 
+            ID = 0; 
 
             // We want our bridges in one array for quick look-up
             bridges = new OgNode[difficulty + 1]; // We don't use bridges[0]. Memory waste yes, but it's more easy to work with
@@ -280,6 +280,9 @@ namespace ConsoleApplication1
         protected string name;
         public abstract string Name();
         public bool bplayer;
+        public bool contested;
+
+        public abstract void Contested();
     }
 
     public class BeginNode : OgNode //starting node of the dungeon
@@ -289,12 +292,17 @@ namespace ConsoleApplication1
             maxMonsters = nodeLevel = 0;
             name = "Begin";
             neighbors = new List<OgNode>();
+            monsters = new List<Pack>();
+            items = new List<Item>();
+            contested = false;
         }
 
         public override string Name()
         {
             return name;
         }
+
+        public override void Contested(){}
     }
 
     public class EndNode : OgNode // end node of the dungeon
@@ -304,6 +312,9 @@ namespace ConsoleApplication1
             name = "End";
             maxMonsters = nodeLevel = 0;
             neighbors = new List<OgNode>();
+            monsters = new List<Pack>();
+            items = new List<Item>();
+            contested = false;
         }
 
         public override string Name()
@@ -311,14 +322,14 @@ namespace ConsoleApplication1
             return name;
         }
 
-
+        public override void Contested() {}
     }
 
     public class Node : OgNode
     {
 		//variables used to calculate maxmonster and to check for contested
         float m;
-        public bool contested, crystalUsed;
+        public bool crystalUsed;
         public int monsterAmount;
 
         public Node(int nLevel,string nName)
@@ -342,7 +353,11 @@ namespace ConsoleApplication1
         {
             bool end = false;
             while (player.HP > 0 && p.Count > 0 && !end)
-                end = doCombatRound(p,player);
+            {
+                end = doCombatRound(p, player);
+                if (player.getCommand() == 4)
+                    break;
+            }
 
             if (p.Count == 0)
                 monsters.Remove(p);
@@ -350,14 +365,13 @@ namespace ConsoleApplication1
 
         public bool doCombatRound(Pack p, Player player) // method for 1 round of combat
         {
-            //player.getCommand();
+            Console.WriteLine("You are attacking the monster pack");
             player.Attack(p);
             p.Attack(player);
 
             if (p.Count == 0)
                 monsters.Remove(p);
 
-            //player.getCommand();
             if (p.totalHealth < player.HP)
             {
                 if (p.totalHealth > 0)
@@ -369,7 +383,7 @@ namespace ConsoleApplication1
 
             return false;
         }
-        public void Contested() //checks if the player and monsters are in the same node
+        public override void Contested() //checks if the player and monsters are in the same node
         {
             if (bplayer && monsters.Count > 0)
                 contested = true;
@@ -393,6 +407,11 @@ namespace ConsoleApplication1
         public override string Name()
         {
             return name;
+        }
+
+        public override void Contested()
+        {
+            
         }
     }
 }
