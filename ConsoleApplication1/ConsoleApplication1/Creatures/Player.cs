@@ -58,6 +58,7 @@ namespace ConsoleApplication1
             }
             else //Timecrystal in use
             {
+                Console.WriteLine("Time Crystal is in use, every monster is attacked");
                 for (int i = 0; i < p.Count; i++)
                     p.pack[i].HP = p.pack[i].HP - AR;
 
@@ -71,6 +72,8 @@ namespace ConsoleApplication1
                     else
                         i++;
                 }
+
+                ((Node)currentNode).crystalUsed = false;
             }
         }
 
@@ -90,14 +93,22 @@ namespace ConsoleApplication1
                 if (potions.Count > 0)
                 {
                     HP = Math.Min(HP + potions[0].HP, maxHP);
+                    Console.WriteLine("Potion used");
                     potions.RemoveAt(0);
                 }
+                else
+                    Console.WriteLine("You don't have any Potions");
             }
             else 
             {
-                if(currentNode.Name() != "begin" && currentNode.Name() != "end")
-                ((Node)currentNode).crystalUsed = true;
-                crystals.RemoveAt(0);
+                if (currentNode.Name() != "Begin" && currentNode.Name() != "End" && crystals.Count > 0)
+                {
+                    ((Node)currentNode).crystalUsed = true;
+                    Console.WriteLine("Time Crystal used");
+                    crystals.RemoveAt(0);
+                }
+                else
+                    Console.WriteLine("You don't have any crystals");
             }
 
         }

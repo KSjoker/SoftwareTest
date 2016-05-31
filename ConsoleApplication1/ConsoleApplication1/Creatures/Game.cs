@@ -27,7 +27,14 @@ namespace ConsoleApplication1
             if (dungeon == null)
                 dungeon = new Dungeon(1);
             else
+            {
+                Console.WriteLine("You have reached the exit of the current Dungeon");
+                Console.WriteLine("Creating new Dungeon");
                 dungeon = new Dungeon(dungeon.bridges.Length, player.HP + (player.potions.Count * 20));
+                player.Move(dungeon.beginNode);
+                Console.WriteLine("Press any key to continue");
+                Console.ReadLine();
+            }
         }
 
         // Updates monster list to contain all packs of monsters that currently roam the dungeon

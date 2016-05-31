@@ -158,11 +158,11 @@ namespace ConsoleApplication1
         void Add_DiamondZone(OgNode begin, int zoneLevel, bool end)
         {
             // Create new nodes and a bridge
-            Node node1 = new Node(0, "node-" + zoneLevel.ToString() + "-" + UniqueID().ToString());
-            Node node2 = new Node(0, "node-" + zoneLevel.ToString() + "-" + UniqueID().ToString());
+            Node node1 = new Node(0, "node-" + zoneLevel.ToString() + "-" + UniqueID().ToString(), zoneLevel);
+            Node node2 = new Node(0, "node-" + zoneLevel.ToString() + "-" + UniqueID().ToString(), zoneLevel);
             OgNode bridge;
             if (!end)
-                bridge = new Node(zoneLevel, "bridge-" + zoneLevel.ToString());
+                bridge = new Node(zoneLevel, "bridge-" + zoneLevel.ToString(), zoneLevel);
             else
                 bridge = endNode;
 
@@ -196,7 +196,7 @@ namespace ConsoleApplication1
                 zones[zoneLevel].Add(bridge);
         }
 
-        public List<OgNode> shortestPath(OgNode start, OgNode end)
+        public static List<OgNode> shortestPath(OgNode start, OgNode end, bool shortestPathInZone)
         {
             List<List<OgNode>> open = new List<List<OgNode>>(); //Paths we need to process
             List<OgNode> closed = new List<OgNode>(); //Nodes that we already processed
@@ -219,15 +219,23 @@ namespace ConsoleApplication1
                     {
                         if (!closed.Contains(neighbor)) //If we haven't seen that neighbor node earlier
                         {
-                            // We will create a new path by copying the current path and adding the neighbor node
-                            List<OgNode> newPath = path.ToList();
-                            newPath.Add(neighbor);
-                            
-                            // If this node is our end destination we can return the path
-                            if(neighbor == end)
-                                return newPath;
-                            else //Else, we will add it to the open list so that it will be processed in the following iteration
-                                open.Add(newPath);
+                            bool ignore = false;
+                            if (shortestPathInZone) //We only want a possible shortest path that goes through nodes from one zone
+                                if (neighbor.zone != lastNodeInPath.zone)
+                                    ignore = true;
+
+                            if (!ignore)
+                            {
+                                // We will create a new path by copying the current path and adding the neighbor node
+                                List<OgNode> newPath = path.ToList();
+                                newPath.Add(neighbor);
+
+                                // If this node is our end destination we can return the path
+                                if (neighbor == end)
+                                    return newPath;
+                                else //Else, we will add it to the open list so that it will be processed in the following iteration
+                                    open.Add(newPath);
+                            }
                         }
                     }
 
@@ -244,8 +252,9 @@ namespace ConsoleApplication1
             return node.nodeLevel;
         }
 
-        public void BridgeDestroy(OgNode bridge){
-
+        public void BridgeDestroy(OgNode bridge)
+        {
+            Console.WriteLine("Current Bridge Node is being Destroyed!");
             foreach (OgNode neighbor in bridge.neighbors)
                 neighbor.neighbors.Remove(bridge);
 
@@ -273,7 +282,7 @@ namespace ConsoleApplication1
 
     public abstract class OgNode//base class for all the nodes
     {
-        public int maxMonsters, nodeLevel;
+        public int maxMonsters, nodeLevel, zone;
         public List<Item> items;
         public List<Pack> monsters;
         public List<OgNode> neighbors;
@@ -295,6 +304,7 @@ namespace ConsoleApplication1
             monsters = new List<Pack>();
             items = new List<Item>();
             contested = false;
+            zone = -1;
         }
 
         public override string Name()
@@ -315,6 +325,7 @@ namespace ConsoleApplication1
             monsters = new List<Pack>();
             items = new List<Item>();
             contested = false;
+            zone = -1;
         }
 
         public override string Name()
@@ -332,7 +343,7 @@ namespace ConsoleApplication1
         public bool crystalUsed;
         public int monsterAmount;
 
-        public Node(int nLevel,string nName)
+        public Node(int nLevel, string nName, int zoneL)
         {
             nodeLevel = nLevel;
             m = 20.0f;
@@ -342,6 +353,7 @@ namespace ConsoleApplication1
             monsters = new List<Pack>();
             items = new List<Item>();
             monsterAmount = 0;
+            zone = zoneL;
         }
 
         public override string Name()
@@ -352,15 +364,19 @@ namespace ConsoleApplication1
         public void doCombat(Pack p, Player player) // method for combat for a player and a monster pack
         {
             bool end = false;
+            Console.WriteLine("Start Combat");
             while (player.HP > 0 && p.Count > 0 && !end)
             {
                 end = doCombatRound(p, player);
+                Console.WriteLine("Combat round is over, retreat or continue?");
                 if (player.getCommand() == 4)
                     break;
             }
 
             if (p.Count == 0)
                 monsters.Remove(p);
+
+            Console.WriteLine("Combat is over");
         }
 
         public bool doCombatRound(Pack p, Player player) // method for 1 round of combat
@@ -386,8 +402,15 @@ namespace ConsoleApplication1
         public override void Contested() //checks if the player and monsters are in the same node
         {
             if (bplayer && monsters.Count > 0)
+            {
                 contested = true;
-            else contested = false;
+                Console.WriteLine("CurrentNode is Contested!");
+            }
+            else
+            {
+                contested = false;
+                Console.WriteLine("CurrentNode is not Contested");
+            }
         }
 
         public void AddMonsters(Pack newPack) //adds monsterpacks to the node

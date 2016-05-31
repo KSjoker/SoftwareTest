@@ -18,7 +18,7 @@ namespace TestProject
             int maxhp = 100;
             int ar = 10;
             //create player
-            Player player = new Player(hp, maxhp, ar,new Node(2, "test"));
+            Player player = new Player(hp, maxhp, ar,new Node(2, "test", 1));
             //Make sure player is created properly
             Assert.AreEqual(hp, player.HP);
             Assert.AreEqual(maxhp,player.maxHP);
@@ -56,21 +56,21 @@ namespace TestProject
             int count = 6;
             int upper = 10;
             //Check if packs are created properly
-            Pack pack = new Pack(new Node(2, "test"), hp, ar, count);
+            Pack pack = new Pack(new Node(2, "test", 1), hp, ar, count);
 
             Assert.AreEqual(count * hp, pack.totalHealth);
             Assert.AreEqual(ar, pack.pack[0].AR);
             Assert.AreEqual(count, pack.Count);
 
             //Check if randomly generated packs' size falls within given parameters
-            pack = new Pack(new Node(2, "test"), hp, ar, count, upper);  
+            pack = new Pack(new Node(2, "test", 1), hp, ar, count, upper);  
             Assert.IsTrue(pack.Count > 5 && pack.Count < 11);
         }
 
         [TestMethod]
         public void TestAttack()
         {
-            Node testNode = new Node(2, "test");
+            Node testNode = new Node(2, "test", 1);
             Player player = new Player(100, 100,10, testNode);
             int hp = 10;
             int higherHP = 15;
@@ -112,9 +112,9 @@ namespace TestProject
         public void MoveTest()
         {
             //Dungeon with 3 nodes, one way movement only
-            Node node1 = new Node(0, "1");
-            Node node2 = new Node(0, "2");
-            Node node3 = new Node(0, "3");
+            Node node1 = new Node(0, "1", 1);
+            Node node2 = new Node(0, "2", 1);
+            Node node3 = new Node(0, "3", 1);
             EndNode end = new EndNode();
 
             node1.neighbors.Add(node2);

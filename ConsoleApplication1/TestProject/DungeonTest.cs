@@ -46,7 +46,7 @@ namespace TestProject
         public void shortestPath_TestNullStartisEnd()
         {
             Dungeon dungeon = new Dungeon(1);
-            List<OgNode> path = dungeon.shortestPath(dungeon.beginNode, dungeon.beginNode);
+            List<OgNode> path = Dungeon.shortestPath(dungeon.beginNode, dungeon.beginNode, false);
             Assert.IsNull(path);
         }
 
@@ -54,7 +54,7 @@ namespace TestProject
         public void shortestPath_TestNullPathNotLegit()
         {
             Dungeon dungeon = new Dungeon(1);
-            List<OgNode> path = dungeon.shortestPath(dungeon.beginNode, new Node(0, "I don't exist"));
+            List<OgNode> path = Dungeon.shortestPath(dungeon.beginNode, new Node(0, "I don't exist", 1), false);
             Assert.IsNull(path);
         }
 
@@ -62,7 +62,7 @@ namespace TestProject
         public void shortestPath_TestNotNull()
         {
             Dungeon dungeon = new Dungeon(1);
-            List<OgNode> path = dungeon.shortestPath(dungeon.bridges[1], dungeon.endNode); //Path from bridge 1 to endNode
+            List<OgNode> path = Dungeon.shortestPath(dungeon.bridges[1], dungeon.endNode, false); //Path from bridge 1 to endNode
 
             Assert.AreSame(path[0], dungeon.bridges[1]);
             Assert.AreSame(path[1], dungeon.zones[2][0]);
@@ -76,7 +76,7 @@ namespace TestProject
 
             Assert.AreEqual(3, dungeon.bridges.Length - 1);
 
-            List<OgNode> path = dungeon.shortestPath(dungeon.beginNode, dungeon.endNode);
+            List<OgNode> path = Dungeon.shortestPath(dungeon.beginNode, dungeon.endNode, false);
             int bridgeNumber = 0;
             foreach(OgNode node in path)
             {
@@ -94,7 +94,7 @@ namespace TestProject
 
             Assert.AreEqual(0, dungeon.bridges.Length - 1);
 
-            List<OgNode> path = dungeon.shortestPath(dungeon.beginNode, dungeon.endNode);
+            List<OgNode> path = Dungeon.shortestPath(dungeon.beginNode, dungeon.endNode, false);
             int bridgeNumber = 0;
             foreach (OgNode node in path)
             {

@@ -10,7 +10,7 @@ namespace TestProject
         [TestMethod]
         public void NodeTest_Name()
         {
-            Node node = new Node(0, "Hello");
+            Node node = new Node(0, "Hello", 1);
             string expectedName = "Hello";
 
             string testName = node.Name();
@@ -38,7 +38,7 @@ namespace TestProject
         [TestMethod]
         public void NodeTest_AddMonsters()
         {
-            Node node = new Node(0, "hello");
+            Node node = new Node(0, "hello", 1);
             Pack dummy = new Pack(node, 10, 10, 2, 5);
             node.AddMonsters(dummy);
             bool monstercountbt0 = node.monsters.Count > 0;
@@ -74,21 +74,21 @@ namespace TestProject
         [TestMethod]
         public void NodeTest_Contested()
         {
-            Node node = new Node(0, "hello");
+            Node node = new Node(0, "hello", 1);
             node.bplayer = true;
             node.Contested();
 
-            Node node2 = new Node(0, "hello2");
+            Node node2 = new Node(0, "hello2", 1);
             node2.bplayer = false;
             node2.Contested();
 
-            Node node3 = new Node(0, "hello3");
+            Node node3 = new Node(0, "hello3", 1);
             node3.bplayer = true;
             Pack dummy = new Pack(node3, 10, 10, 2, 5);
             node3.AddMonsters(dummy);
             node3.Contested();
 
-            Node node4 = new Node(0, "hello4");
+            Node node4 = new Node(0, "hello4", 1);
             node4.bplayer = false;
             Pack dummy2 = new Pack(node4, 11, 11, 3, 4);
             node4.AddMonsters(dummy2);
@@ -108,8 +108,8 @@ namespace TestProject
         [TestMethod]
         public void NodeTest_DoCombat()
         {
-            Node node = new Node(0, "Hello");
-            Node neighbor = new Node(0, "NEighbour");
+            Node node = new Node(0, "Hello", 1);
+            Node neighbor = new Node(0, "NEighbour", 1);
             node.neighbors.Add(neighbor);
             neighbor.neighbors.Add(node);
             Player player = new Player(100,100,4, node);
@@ -123,8 +123,8 @@ namespace TestProject
         [TestMethod]
         public void NodeTest_DoCombatUntilDeath()
         {
-            Node node = new Node(0, "Hello");
-            Node neighbor = new Node(0, "NEighbour");
+            Node node = new Node(0, "Hello", 1);
+            Node neighbor = new Node(0, "NEighbour", 1);
             node.neighbors.Add(neighbor);
             neighbor.neighbors.Add(node);
             Player player = new Player(100, 100, 4, node);

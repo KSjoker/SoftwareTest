@@ -45,11 +45,39 @@ namespace ConsoleApplication1
             
 
             //If there's space for the pack, move to target
-            if(monstersInNode + this.Count < target.maxMonsters)
+            if(monstersInNode + this.Count < target.maxMonsters && target.zone == currentNode.zone)
             {
                 currentNode.monsters.Remove(this);
                 target.monsters.Add(this);
                 currentNode = (Node)target;
+                Console.WriteLine("The Monster pack moved to " + target.Name());
+            }
+        }
+
+        public void MoveTowardsPlayer(OgNode playerNode)
+        {
+            //select a target node
+            List<OgNode> shortestPath = Dungeon.shortestPath(currentNode, playerNode, true);
+            if (shortestPath == null)
+            {
+                Console.WriteLine("A Monster pack wanted to move, but failed");
+                return;
+            }
+
+            OgNode target = shortestPath[1];
+
+            //find number of monsters already present in node
+            int monstersInNode = 0;
+            for (int i = 0; i < target.monsters.Count; i++)
+                monstersInNode += target.monsters[i].Count;
+
+            //If there's space for the pack, move to target
+            if (monstersInNode + this.Count < target.maxMonsters)
+            {
+                currentNode.monsters.Remove(this);
+                target.monsters.Add(this);
+                currentNode = (Node)target;
+                Console.WriteLine("A Monster pack moved to " + target.Name());
             }
         }
 

@@ -15,7 +15,7 @@ namespace ConsoleApplication1
             Game game = new Game();
             bool gaming = true;
 
-            Console.WriteLine("Start new Game");
+            Console.WriteLine("Press any key to start new Game");
             Console.ReadLine();
 
             while(gaming)
@@ -24,7 +24,20 @@ namespace ConsoleApplication1
                 Player player = game.player;
                 Dungeon dungeon = game.dungeon;
 
+                //MONSTERS MOVE TO PLAYER IN SAME ZONE
+                Console.WriteLine("MONSTER POSITION INFO------------------------------------------");
+                if (currentNode.zone != -1) //We are in a zone which has a level of >= 1
+                    foreach (OgNode node in dungeon.zones[currentNode.zone])
+                    {
+                        Pack[] packs = node.monsters.ToArray();
+                        for(int i = 0; i < packs.Length; i++)
+                            packs[i].MoveTowardsPlayer(currentNode);
+                    }
+                else
+                    Console.WriteLine("No Monsters moved towards you....");
+
                 // Player information
+                Console.WriteLine(" ");
                 Console.WriteLine("PLAYER INFORMATION---------------------------------------------");
                 Console.WriteLine("Player HP = " + player.HP.ToString());
                 Console.WriteLine("Player AR = " + player.AR.ToString());
@@ -36,11 +49,11 @@ namespace ConsoleApplication1
                 Console.WriteLine("NODE INFORMATION-----------------------------------------------");
                 Console.WriteLine("Current Node ID = " + currentNode.Name());
                 if (currentNode.nodeLevel > 0)
-                    Console.WriteLine("Current Node type = Bridge");
-                else if (currentNode.Name() == "begin")
-                    Console.WriteLine("Current Node type = Start");
-                else if (currentNode.Name() == "end")
-                    Console.WriteLine("Current Node type = End");
+                    Console.WriteLine("Current Node type = Bridge \n");
+                else if (currentNode.Name() == "Begin")
+                    Console.WriteLine("Current Node type = Start \n");
+                else if (currentNode.Name() == "End")
+                    Console.WriteLine("Current Node type = End \n");
                 else
                     Console.WriteLine("Current Node type = Plain Node \n");
 
@@ -56,7 +69,7 @@ namespace ConsoleApplication1
                 Console.WriteLine("MONSTER INFORMATION--------------------------------------------");
                 Console.WriteLine("Monster packs currently in Current Node: ");
                 if (currentNode.monsters.Count == 0)
-                    Console.Write("No Monsters");
+                    Console.Write("No Monsters \n");
                 for(int i = 1; i <= currentNode.monsters.Count(); i++)
                 {
                     Console.WriteLine("Monster pack " + i.ToString() + " :");
@@ -64,27 +77,35 @@ namespace ConsoleApplication1
                     Console.WriteLine("Total HP = " + currentNode.monsters[i - 1].totalHealth.ToString());
                 }
 
-                Console.WriteLine("\n GAME--------------------------------------------------------");
+                Console.WriteLine(" ");
+                Console.WriteLine("GAME--------------------------------------------------------");
                 // THE GAME
 
                 // Check for monsters
                 currentNode.Contested(); //Check if current Node is contested or not
                 bool continueCombat = true;
+                bool bridgeDestroy = false;
+                int DestroyedBridge = -1;
                 while (currentNode.contested && continueCombat)
                 {
-                    Console.WriteLine("CurrentNode is Contested!");
                     bool input1 = true;
+                    Console.WriteLine("Combat is about to Begin...");
                     while (input1)
                     {
                         switch (player.getCommand())
                         {
                             case 2:
                                 player.UseItem(new Potion(20));
-                                Console.WriteLine("Potion used");
                                 break;
                             case 3:
                                 player.UseItem(new TimeCrystal());
-                                Console.WriteLine("Crystal used");
+                                if (currentNode.nodeLevel > 0 && ((Node)currentNode).crystalUsed)
+                                {
+                                    DestroyedBridge = currentNode.zone;
+                                    dungeon.BridgeDestroy(currentNode);
+                                    bridgeDestroy = true;
+                                    input1 = false;
+                                }
                                 break;
                             case 5:
                                 input1 = false;
@@ -96,13 +117,11 @@ namespace ConsoleApplication1
                     }
 
                     //Time Crystal is used on a bridge
-                    if (((Node)currentNode).crystalUsed && currentNode.nodeLevel > 0)
+                    if (bridgeDestroy)
                         break;
 
-                    // Player chooses which pack he/she wants to attack
-                    Console.WriteLine("Start Combat");
+                    // Player starts Combat
                     ((Node)currentNode).doCombat(currentNode.monsters[0], player);
-                    Console.WriteLine("Combat is over, what do you want to do?");
                     input1 = true;
 
                     while (input1)
@@ -111,6 +130,7 @@ namespace ConsoleApplication1
                         {
                             case 1:
                                 continueCombat = false;
+                                input1 = false;
                                 break;
                             case 5:
                                 input1 = false;
@@ -125,15 +145,25 @@ namespace ConsoleApplication1
                 }
 
                 // Player can now choose where he/she wants to go next
-                Console.WriteLine("Pick a destination: write ID of edge, if you fuck up you stay");
-                string answer = Console.ReadLine();
-                foreach(OgNode neighbor in currentNode.neighbors)
+                if (!bridgeDestroy)
                 {
-                    if (answer == neighbor.Name())
-                        player.Move(neighbor);
+                    Console.WriteLine("Pick a destination: write ID of edge, if you write something else you will stay in the Current Node");
+                    string answer = Console.ReadLine();
+                    foreach (OgNode neighbor in currentNode.neighbors)
+                    {
+                        if (answer == neighbor.Name())
+                        {
+                            player.Move(neighbor);
+                            if (answer == "End")
+                                game.nextDungeon();
+                        }
+                    }
                 }
-
-                Console.ReadLine();
+                else
+                {
+                    Console.WriteLine("Bridge has been destroyed, you will be moved to safe neighboring node");
+                    player.Move(dungeon.zones[DestroyedBridge + 1][0]);
+                }
             }
         }
     }
