@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
+    [Serializable]
     public abstract class Creature
     {
        protected int hitPoints;

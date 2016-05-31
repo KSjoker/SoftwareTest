@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
+    [Serializable]
     public abstract class Item
     {
         
     }
 
+    [Serializable]
     public class Potion : Item
     {
         public int HP;
@@ -21,6 +23,7 @@ namespace ConsoleApplication1
         }
     }
 
+    [Serializable]
     public class TimeCrystal : Item
     {
         public TimeCrystal()

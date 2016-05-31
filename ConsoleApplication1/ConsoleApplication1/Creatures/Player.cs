@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
+    [Serializable]
     public class Player : Creature
     {
         /* TODO: -Implement Timecrystal functionality

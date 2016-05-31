@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
+    [Serializable]
     public class Dungeon
     {
         public List<OgNode> nodes = new List<OgNode>(); //List of every node in the graph
@@ -280,6 +281,7 @@ namespace ConsoleApplication1
         }
     }
 
+    [Serializable]
     public abstract class OgNode//base class for all the nodes
     {
         public int maxMonsters, nodeLevel, zone;
@@ -294,6 +296,7 @@ namespace ConsoleApplication1
         public abstract void Contested();
     }
 
+    [Serializable]
     public class BeginNode : OgNode //starting node of the dungeon
     {
         public BeginNode()
@@ -315,6 +318,7 @@ namespace ConsoleApplication1
         public override void Contested(){}
     }
 
+    [Serializable]
     public class EndNode : OgNode // end node of the dungeon
     {
         public EndNode()
@@ -336,6 +340,7 @@ namespace ConsoleApplication1
         public override void Contested() {}
     }
 
+    [Serializable]
     public class Node : OgNode
     {
 		//variables used to calculate maxmonster and to check for contested
@@ -420,6 +425,7 @@ namespace ConsoleApplication1
         }
     }
 
+    [Serializable]
     public class NillNode : OgNode // represents a null object neighbor node. but instead of using the null object, we will use nillnode
     {
 		public NillNode()

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +20,9 @@ namespace ConsoleApplication1
             Console.WriteLine("Press any key to start new Game");
             Console.ReadLine();
 
-            while(gaming)
+            //Game copy = DeepClone<Game>(game);
+
+            while (gaming)
             {
                 OgNode currentNode = game.player.currentNode;
                 Player player = game.player;
@@ -30,7 +34,7 @@ namespace ConsoleApplication1
                     foreach (OgNode node in dungeon.zones[currentNode.zone])
                     {
                         Pack[] packs = node.monsters.ToArray();
-                        for(int i = 0; i < packs.Length; i++)
+                        for (int i = 0; i < packs.Length; i++)
                             packs[i].MoveTowardsPlayer(currentNode);
                     }
                 else
@@ -60,7 +64,7 @@ namespace ConsoleApplication1
                 // Available edges at Current Node
                 Console.WriteLine("EDGE INFORMATION-----------------------------------------------");
                 Console.WriteLine("Available edges at Current Node:");
-                foreach(OgNode neighbor in currentNode.neighbors)
+                foreach (OgNode neighbor in currentNode.neighbors)
                     Console.Write(neighbor.Name() + "   ");
 
                 // Monster packs currently in Current Node
@@ -70,7 +74,7 @@ namespace ConsoleApplication1
                 Console.WriteLine("Monster packs currently in Current Node: ");
                 if (currentNode.monsters.Count == 0)
                     Console.Write("No Monsters \n");
-                for(int i = 1; i <= currentNode.monsters.Count(); i++)
+                for (int i = 1; i <= currentNode.monsters.Count(); i++)
                 {
                     Console.WriteLine("Monster pack " + i.ToString() + " :");
                     Console.WriteLine("Amount = " + currentNode.monsters[i - 1].Count.ToString());
@@ -166,5 +170,19 @@ namespace ConsoleApplication1
                 }
             }
         }
+
+        //Deep Copy object
+        public static T DeepClone<T>(T obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (T)formatter.Deserialize(ms);
+            }
+        }
+
     }
 }
