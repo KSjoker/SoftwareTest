@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace ConsoleApplication1
 {
-    class Tests
+    public static class Tests
     {
-
-        static public void CapacityTest(List<Game> testcase)
+        static public bool CapacityTest(List<Game> testcase)
         {
             for (int i = 0; i < testcase.Count; i++)
             {
@@ -20,15 +19,16 @@ namespace ConsoleApplication1
                     {
                         Console.WriteLine("Error:");
                         Console.WriteLine("Node over capacity at iteration [0]", i);
-                        throw new Exception("Capacity issue");
-                        return;
+                        return false;
                     }
                 }
             }
+
             Console.WriteLine("No problem with capacity found");
+            return true;
         }
 
-        public void ZoneTest(List<Game> testcase)
+        static public bool ZoneTest(List<Game> testcase)
         {
             for (int i = 0; i < testcase.Count - 1; i++)
             {
@@ -47,13 +47,26 @@ namespace ConsoleApplication1
                         {
                             Console.WriteLine("Error:");
                             Console.WriteLine("Pack moved wrong at iteration [0]", i);
-                            throw new Exception("Pack movement issue");
-                            return;
+                            return false;
                         }
                     }
                 }
             }
+
             Console.WriteLine("No issues with monster movement");
+            return true;
+        }
+
+        static public bool MonsterAmountTest(List<Game> states)
+        {
+            bool test = true;
+            foreach (Game state in states)
+            {
+                foreach (Node node in state.dungeon.nodes)
+                    test &= node.monsterAmount <= node.maxMonsters;
+            }
+
+            return test;
         }
     }
 }
