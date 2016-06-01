@@ -11,10 +11,11 @@ namespace ConsoleApplication1
     {
 
         public List<Monster> pack;
-        Node currentNode;
+        public Node currentNode;
         Random rand = new Random();
+        public int ID;
         public int zone;
-        public Pack(Node node, int HP, int AP, int lowerBound, int upperBound = 0)
+        public Pack(int ID, Node node, int HP, int AP, int lowerBound, int upperBound = 0)
         {
             //Generates a new pack of monsters. If the fourth parameter is left out, the pack size will equal that of lowerBound. 
             //Else, the pack size will be a random number between lowerBound and upperBound
