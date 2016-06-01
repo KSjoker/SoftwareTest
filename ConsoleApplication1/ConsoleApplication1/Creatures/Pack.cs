@@ -13,6 +13,7 @@ namespace ConsoleApplication1
         public List<Monster> pack;
         Node currentNode;
         Random rand = new Random();
+        public int zone;
         public Pack(Node node, int HP, int AP, int lowerBound, int upperBound = 0)
         {
             //Generates a new pack of monsters. If the fourth parameter is left out, the pack size will equal that of lowerBound. 
@@ -27,6 +28,8 @@ namespace ConsoleApplication1
                 amount = rand.Next(lowerBound, upperBound);
             for (int i = 0; i < amount; i++)
                 pack.Add(new Monster(HP, AP));
+
+            zone = node.zone;
         }
 
         public void Move()
