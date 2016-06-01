@@ -89,6 +89,7 @@ namespace ConsoleApplication1
                 currentNode.Contested(); //Check if current Node is contested or not
                 bool continueCombat = true;
                 bool bridgeDestroy = false;
+                bool gameOver = false;
                 int DestroyedBridge = -1;
                 while (currentNode.contested && continueCombat)
                 {
@@ -125,7 +126,12 @@ namespace ConsoleApplication1
                         break;
 
                     // Player starts Combat
-                    ((Node)currentNode).doCombat(currentNode.monsters[0], player);
+                    if (!((Node)currentNode).doCombat(currentNode.monsters[0], player))
+                    {
+                        gameOver = true;
+                        break;
+                    }
+
                     input1 = true;
 
                     while (input1)
@@ -148,26 +154,31 @@ namespace ConsoleApplication1
                     currentNode.Contested(); //Check if current Node is contested or not
                 }
 
-                // Player can now choose where he/she wants to go next
-                if (!bridgeDestroy)
+                if (!gameOver)
                 {
-                    Console.WriteLine("Pick a destination: write ID of edge, if you write something else you will stay in the Current Node");
-                    string answer = Console.ReadLine();
-                    foreach (OgNode neighbor in currentNode.neighbors)
+                    // Player can now choose where he/she wants to go next
+                    if (!bridgeDestroy)
                     {
-                        if (answer == neighbor.Name())
+                        Console.WriteLine("Pick a destination: write ID of edge, if you write something else you will stay in the Current Node");
+                        string answer = Console.ReadLine();
+                        foreach (OgNode neighbor in currentNode.neighbors)
                         {
-                            player.Move(neighbor);
-                            if (answer == "End")
-                                game.nextDungeon();
+                            if (answer == neighbor.Name())
+                            {
+                                player.Move(neighbor);
+                                if (answer == "End")
+                                    game.nextDungeon();
+                            }
                         }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Bridge has been destroyed, you will be moved to safe neighboring node");
+                        player.Move(dungeon.zones[DestroyedBridge + 1][0]);
                     }
                 }
                 else
-                {
-                    Console.WriteLine("Bridge has been destroyed, you will be moved to safe neighboring node");
-                    player.Move(dungeon.zones[DestroyedBridge + 1][0]);
-                }
+                    game = new Game();
             }
         }
 

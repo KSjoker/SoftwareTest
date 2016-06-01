@@ -366,13 +366,19 @@ namespace ConsoleApplication1
             return name;
         }
 
-        public void doCombat(Pack p, Player player) // method for combat for a player and a monster pack
+        public bool doCombat(Pack p, Player player) // method for combat for a player and a monster pack
         {
             bool end = false;
             Console.WriteLine("Start Combat");
             while (player.HP > 0 && p.Count > 0 && !end)
             {
                 end = doCombatRound(p, player);
+                if (player.HP <= 0)
+                {
+                    Console.WriteLine("You died during combat...");
+                    Console.WriteLine("Starting new Game...");
+                    return false;
+                }
                 Console.WriteLine("Combat round is over, retreat or continue?");
                 if (player.getCommand() == 4)
                     break;
@@ -382,6 +388,7 @@ namespace ConsoleApplication1
                 monsters.Remove(p);
 
             Console.WriteLine("Combat is over");
+            return true;
         }
 
         public bool doCombatRound(Pack p, Player player) // method for 1 round of combat
