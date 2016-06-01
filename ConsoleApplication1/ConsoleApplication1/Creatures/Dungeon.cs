@@ -143,7 +143,7 @@ namespace ConsoleApplication1
                 if (toAdd == 0) //If we can't add any more monsters
                     break;
 
-                Pack newPack = new Pack(node, 10, 10, 1, toAdd + 1); //Create new Pack with a random number of monsters
+                Pack newPack = new Pack(MonsterID(),node, 10, 10, 1, toAdd + 1); //Create new Pack with a random number of monsters
 
                 if (newPack.Count + node.monsterAmount <= node.maxMonsters) //Check node constraint (doesn't really matter actually, this "if" is always true)
                     node.AddMonsters(newPack);
@@ -278,6 +278,12 @@ namespace ConsoleApplication1
         int UniqueID() {
             ID++;
             return ID - 1; 
+        }
+
+        int MonsterID()
+        {
+            ID++;
+            return ID - 1;
         }
     }
 
