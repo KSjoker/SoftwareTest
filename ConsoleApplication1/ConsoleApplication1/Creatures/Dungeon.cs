@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GlobalRNGSwitch;
 
 namespace ConsoleApplication1
 {
@@ -88,13 +89,28 @@ namespace ConsoleApplication1
             // 50% chance foreach node to contain a potion
             foreach (OgNode node in zones[zone])
             {
-                if (random.Next(1, 5) == 1) //Add crystal with a 25% chance of success
+                if (GlobalRNGSwitch.GlobalRNG.RNGSwitch)
+                {
+                    if (random.Next(1, 5) == 1) //Add crystal with a 25% chance of success
+                        node.items.Add(new TimeCrystal());
+
+                    int health = 20;
+                    if ((HPtoAdd - health) >= 0) //If we may add a potion 
+                    {
+                        if (random.Next(1, 3) == 1) //Add potion with a 50% chance of success
+                        {
+                            node.items.Add(new Potion(health));
+                            HPAdded = HPAdded + health;
+                            HPtoAdd = HPtoAdd - health;
+                        }
+                    }
+                }
+                else
+                {
                     node.items.Add(new TimeCrystal());
 
-                int health = 20;
-                if ((HPtoAdd - health) >= 0) //If we may add a potion 
-                {
-                    if (random.Next(1, 3) == 1) //Add potion with a 50% chance of success
+                    int health = 20;
+                    if ((HPtoAdd - health) >= 0) //If we may add a potion 
                     {
                         node.items.Add(new Potion(health));
                         HPAdded = HPAdded + health;
@@ -143,7 +159,15 @@ namespace ConsoleApplication1
                 if (toAdd == 0) //If we can't add any more monsters
                     break;
 
-                Pack newPack = new Pack(node, 10, 10, 1, toAdd + 1); //Create new Pack with a random number of monsters
+                Pack newPack;
+                if (GlobalRNGSwitch.GlobalRNG.RNGSwitch)
+                {
+                    newPack = new Pack(node, 10, 10, 1, toAdd + 1); //Create new Pack with a random number of monsters
+                }
+                else
+                {
+                    newPack = new Pack(node, 10, 10, 1); //Create new Pack with 1 monster
+                }
 
                 if (newPack.Count + node.monsterAmount <= node.maxMonsters) //Check node constraint (doesn't really matter actually, this "if" is always true)
                     node.AddMonsters(newPack);
