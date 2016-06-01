@@ -49,6 +49,7 @@
     <Compile Include="Creatures\Pack.cs" />
     <Compile Include="Creatures\Player.cs" />
     <Compile Include="Creatures\Program.cs" />
+    <Compile Include="Creatures\RNGSwitch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

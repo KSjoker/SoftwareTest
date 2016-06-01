@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GlobalRNGSwitch;
 
 namespace ConsoleApplication1
 {
@@ -37,7 +38,12 @@ namespace ConsoleApplication1
         {
             //select a target node
             int options = currentNode.neighbors.Count - 1;
-            OgNode target = currentNode.neighbors[rand.Next(options)];
+
+            OgNode target;
+            if (GlobalRNGSwitch.GlobalRNG.RNGSwitch)
+                target = currentNode.neighbors[rand.Next(options)];
+            else
+                target = currentNode.neighbors[0];
 
             //Can't go into target if it's a begin or end Node, so stop trying to  movve
             if (target.GetType() == typeof(EndNode) || target.GetType() == typeof(BeginNode))

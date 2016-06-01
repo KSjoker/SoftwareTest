@@ -28,6 +28,10 @@ namespace ConsoleApplication1
                 Player player = game.player;
                 Dungeon dungeon = game.dungeon;
 
+                //Update item list
+                game.itemListUpdate();
+                game.monsterListUpdate();
+
                 //MONSTERS MOVE TO PLAYER IN SAME ZONE
                 Console.WriteLine("MONSTER POSITION INFO------------------------------------------");
                 if (currentNode.zone != -1) //We are in a zone which has a level of >= 1

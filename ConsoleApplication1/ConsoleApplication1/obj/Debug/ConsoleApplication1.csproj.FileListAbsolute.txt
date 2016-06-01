@@ -4,3 +4,6 @@ C:\Users\K.E.R.I.M\Documents\GitHub\SoftwareTest\ConsoleApplication1\ConsoleAppl
 C:\Users\K.E.R.I.M\Documents\GitHub\SoftwareTest\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
 C:\Users\K.E.R.I.M\Documents\GitHub\SoftwareTest\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
 C:\Users\K.E.R.I.M\Documents\GitHub\SoftwareTest\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
+C:\Users\Lars\Documents\GitHub\SoftwareTest\ConsoleApplication1\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
+C:\Users\Lars\Documents\GitHub\SoftwareTest\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
+C:\Users\Lars\Documents\GitHub\SoftwareTest\ConsoleApplication1\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb
