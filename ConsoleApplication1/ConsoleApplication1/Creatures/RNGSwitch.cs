@@ -8,7 +8,7 @@ namespace GlobalRNGSwitch
 {
     public static class GlobalRNG
     {
-        static GlobalRNG() { RNGSwitch = true; } // Switch --> True = RNG, False = !RNG
+        static GlobalRNG() { RNGSwitch = false; } // Switch --> True = RNG, False = !RNG
 
         public static bool RNGSwitch { get; private set; }
     }

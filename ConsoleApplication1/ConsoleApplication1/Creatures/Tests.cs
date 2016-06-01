@@ -10,18 +10,19 @@ namespace ConsoleApplication1
     {
         static public bool CapacityTest(List<Game> testcase)
         {
+            Console.WriteLine("Starting capacity test");
+
             for (int i = 0; i < testcase.Count; i++)
             {
                 Game game = testcase[i];
-                foreach (Node n in game.dungeon.nodes)
-                {
-                    if (n.monsterAmount > n.maxMonsters)
-                    {
-                        Console.WriteLine("Error:");
-                        Console.WriteLine("Node over capacity at iteration [0]", i);
-                        return false;
-                    }
-                }
+                foreach (List<OgNode> zone in game.dungeon.zones)
+                    foreach(Node n in zone)
+                        if (n.monsterAmount > n.maxMonsters)
+                        {
+                            Console.WriteLine("Error:");
+                            Console.WriteLine("Node over capacity at iteration [0]", i);
+                            return false;
+                        }
             }
 
             Console.WriteLine("No problem with capacity found");
@@ -30,6 +31,8 @@ namespace ConsoleApplication1
 
         static public bool ZoneTest(List<Game> testcase)
         {
+            Console.WriteLine("Starting zone test");
+
             for (int i = 0; i < testcase.Count - 1; i++)
             {
                 Game game = testcase[i];
@@ -38,16 +41,19 @@ namespace ConsoleApplication1
                 Player player2 = game2.player;
                 foreach (Pack p in game.monsters)
                 {
-                    if (p.currentNode.zone == player.currentNode.zone)
+                    if (p.zone == player.currentNode.zone)
                     {
                         Pack p2 = game2.monsters.Find(x => x.ID == p.ID);
-                        int dist = Dungeon.shortestPath(p.currentNode, player.currentNode, true).Count;
-                        int dist2 = Dungeon.shortestPath(p2.currentNode, player2.currentNode, true).Count;
-                        if (dist2 - dist > 0)
+                        List<OgNode> dist = Dungeon.shortestPath(p.currentNode, player.currentNode, true);
+                        List<OgNode> dist2 = Dungeon.shortestPath(p2.currentNode, player2.currentNode, true);
+                        if (dist2 != null && dist != null)
                         {
-                            Console.WriteLine("Error:");
-                            Console.WriteLine("Pack moved wrong at iteration [0]", i);
-                            return false;
+                            if (dist2.Count - dist.Count > 0)
+                            {
+                                Console.WriteLine("Error:");
+                                Console.WriteLine("Pack moved wrong at iteration [0]", i);
+                                return false;
+                            }
                         }
                     }
                 }
@@ -57,15 +63,19 @@ namespace ConsoleApplication1
             return true;
         }
 
-        static public bool MonsterAmountTest(List<Game> states)
+        static public bool MonsterZoneTest(List<Game> games)
         {
-            bool test = true;
-            foreach (Game state in states)
-            {
-                foreach (Node node in state.dungeon.nodes)
-                    test &= node.monsterAmount <= node.maxMonsters;
-            }
+            Console.WriteLine("Starting monster zone test");
 
+            bool test = true;
+            foreach (Game game in games)
+                foreach (Pack monster in game.monsters)
+                    test &= monster.zone == monster.currentNode.zone;
+
+            if (test)
+                Console.WriteLine("Monster zones satisfies constraint");
+            else
+                Console.WriteLine("Monster zones does not satisfy constraint");
             return test;
         }
     }

@@ -20,7 +20,11 @@ namespace ConsoleApplication1
             Console.WriteLine("Press any key to start new Game");
             Console.ReadLine();
 
-            //Game copy = DeepClone<Game>(game);
+            // List of game states
+            List<Game> gameStates = new List<Game>();
+
+            // ADDING START GAME STATE
+            gameStates.Add(DeepClone<Game>(game));
 
             while (gaming)
             {
@@ -28,7 +32,7 @@ namespace ConsoleApplication1
                 Player player = game.player;
                 Dungeon dungeon = game.dungeon;
 
-                //Update item list
+                //Update item/monster list
                 game.itemListUpdate();
                 game.monsterListUpdate();
 
@@ -43,6 +47,9 @@ namespace ConsoleApplication1
                     }
                 else
                     Console.WriteLine("No Monsters moved towards you....");
+
+                // ADDING GAME STATE
+                gameStates.Add(DeepClone<Game>(game));
 
                 // Player information
                 Console.WriteLine(" ");
@@ -91,10 +98,15 @@ namespace ConsoleApplication1
 
                 // Check for monsters
                 currentNode.Contested(); //Check if current Node is contested or not
+
+                // ADDING GAME STATE
+                gameStates.Add(DeepClone<Game>(game));
+
                 bool continueCombat = true;
                 bool bridgeDestroy = false;
                 bool gameOver = false;
                 int DestroyedBridge = -1;
+
                 while (currentNode.contested && continueCombat)
                 {
                     bool input1 = true;
@@ -123,6 +135,12 @@ namespace ConsoleApplication1
                                 Console.WriteLine("Not permitted at this stage: Choose 2, 3 or 5");
                                 break;
                         }
+
+                        //Update monster list
+                        game.monsterListUpdate();
+
+                        // ADDING GAME STATE
+                        gameStates.Add(DeepClone<Game>(game));
                     }
 
                     //Time Crystal is used on a bridge
@@ -132,12 +150,24 @@ namespace ConsoleApplication1
                     // Player starts Combat
                     if (!((Node)currentNode).doCombat(currentNode.monsters[0], player))
                     {
+                        //Update monster list
+                        game.monsterListUpdate();
+
+                        // ADDING GAME STATE
+                        gameStates.Add(DeepClone<Game>(game));
+
                         gameOver = true;
                         break;
                     }
 
-                    input1 = true;
+                    //Update monster list
+                    game.monsterListUpdate();
 
+                    // ADDING GAME STATE
+                    gameStates.Add(DeepClone<Game>(game));
+
+                    // After combat
+                    input1 = true;
                     while (input1)
                     {
                         switch (player.getCommand())
@@ -156,6 +186,9 @@ namespace ConsoleApplication1
                     }
 
                     currentNode.Contested(); //Check if current Node is contested or not
+
+                    // ADDING GAME STATE
+                    gameStates.Add(DeepClone<Game>(game));
                 }
 
                 if (!gameOver)
@@ -183,7 +216,31 @@ namespace ConsoleApplication1
                 }
                 else
                     game = new Game();
+
+                //Update monster list
+                game.monsterListUpdate();
+
+                // ADDING GAME STATE
+                gameStates.Add(DeepClone<Game>(game));
+
+                Console.WriteLine("Do you want to continue playing? Yes or No");
+                while (gaming)
+                {
+                    string answer = Console.ReadLine();
+                    if (answer == "Yes")
+                        break;
+                    else if (answer == "No")
+                        gaming = false;
+                    else
+                        Console.WriteLine("Please write Yes or No");
+                }
             }
+
+            //Testing play session
+            ConsoleApplication1.Tests.CapacityTest(gameStates);
+            ConsoleApplication1.Tests.ZoneTest(gameStates);
+            ConsoleApplication1.Tests.MonsterZoneTest(gameStates);
+
         }
 
         //Deep Copy object
