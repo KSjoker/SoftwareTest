@@ -23,7 +23,7 @@ namespace ConsoleApplication1
             if (answer == "2")
             {
                 SaveAndReplay.SaveGame.Replay = true;
-                string[] lines = System.IO.File.ReadAllLines(@"C:\Users\K.E.R.I.M\Documents\GitHub\SoftwareTest\ConsoleApplication1\GameSession.txt");
+                string[] lines = System.IO.File.ReadAllLines(@"path");
                 foreach (string line in lines)
                     SaveAndReplay.SaveGame.GameSession.Add(line);
             }
@@ -304,7 +304,7 @@ namespace ConsoleApplication1
             // Saving session if not replaying
             if (!SaveAndReplay.SaveGame.Replay)
             {
-                System.IO.File.WriteAllLines(@"C:\Users\K.E.R.I.M\Documents\GitHub\SoftwareTest\ConsoleApplication1\GameSession.txt",
+                System.IO.File.WriteAllLines(@"path",
                     SaveAndReplay.SaveGame.GameSession);
             }
         }
