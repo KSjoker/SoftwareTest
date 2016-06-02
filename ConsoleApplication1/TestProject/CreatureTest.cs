@@ -56,14 +56,14 @@ namespace TestProject
             int count = 6;
             int upper = 10;
             //Check if packs are created properly
-            Pack pack = new Pack(new Node(2, "test", 1), hp, ar, count);
+            Pack pack = new Pack(1, new Node(2, "test", 1), hp, ar, count);
 
             Assert.AreEqual(count * hp, pack.totalHealth);
             Assert.AreEqual(ar, pack.pack[0].AR);
             Assert.AreEqual(count, pack.Count);
 
             //Check if randomly generated packs' size falls within given parameters
-            pack = new Pack(new Node(2, "test", 1), hp, ar, count, upper);  
+            pack = new Pack(2, new Node(2, "test", 1), hp, ar, count, upper);  
             Assert.IsTrue(pack.Count > 5 && pack.Count < 11);
         }
 
@@ -76,7 +76,7 @@ namespace TestProject
             int higherHP = 15;
             int ar = 10;
             int count = 6;
-            Pack pack = new Pack(testNode, hp, ar, count);
+            Pack pack = new Pack(1, testNode, hp, ar, count);
 
             pack.Attack(player);
             //Check if the pack deals correct damage
@@ -94,7 +94,7 @@ namespace TestProject
             //All monsters should die from this attack
             Assert.AreEqual(0, pack.Count);
             Assert.IsTrue(player.killpoint == 6);
-            pack = new Pack(testNode, higherHP, ar, count);
+            pack = new Pack(2, testNode, higherHP, ar, count);
             testNode.crystalUsed = false;
             player.Attack(pack);
 
@@ -121,7 +121,7 @@ namespace TestProject
             node2.neighbors.Add(node3);
             node3.neighbors.Add(end);
 
-            node1.monsters.Add(new Pack(node1, 10, 10, 10));
+            node1.monsters.Add(new Pack(1, node1, 10, 10, 10));
 
             //Monsters should move to node 2
             node1.monsters[0].Move();
@@ -129,7 +129,7 @@ namespace TestProject
             Assert.IsTrue(node1.monsters.Count == 0);
             Assert.IsTrue(node2.monsters.Count == 1);
 
-            node3.monsters.Add((new Pack(node1, 10, 10, 15)));
+            node3.monsters.Add((new Pack(2, node1, 10, 10, 15)));
 
             //Monsters try to move to node3, can't becuase it would be over capacity
             //This means there will be a pack in node3 and node2

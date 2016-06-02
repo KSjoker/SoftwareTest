@@ -32,16 +32,16 @@ namespace ConsoleApplication1
                 Console.WriteLine("You have reached the exit of the current Dungeon");
                 Console.WriteLine("Creating new Dungeon");
                 dungeon = new Dungeon(dungeon.bridges.Length, player.HP + (player.potions.Count * 20));
+                monsterListUpdate();
+                itemListUpdate();
                 player.Move(dungeon.beginNode);
-                Console.WriteLine("Press any key to continue");
-                Console.ReadLine();
             }
         }
 
         // Updates monster list to contain all packs of monsters that currently roam the dungeon
         public void monsterListUpdate()
         {
-            List<Pack> monsters = new List<Pack>(); //Not the most elegant way, but it works fine
+            monsters = new List<Pack>(); //Not the most elegant way, but it works fine
 
             foreach (List<OgNode> zone in dungeon.zones)
             {
@@ -58,7 +58,7 @@ namespace ConsoleApplication1
         // Updates item list to contain all item that currently are scattered throughout the dungeon 
         public void itemListUpdate()
         {
-            List<Item> items = new List<Item>(); //Not the most elegant way, but it works fine
+            items = new List<Item>(); //Not the most elegant way, but it works fine
 
             foreach (List<OgNode> zone in dungeon.zones)
             {

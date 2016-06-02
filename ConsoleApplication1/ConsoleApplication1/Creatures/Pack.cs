@@ -16,6 +16,7 @@ namespace ConsoleApplication1
         Random rand = new Random();
         public int ID;
         public int zone;
+        public bool moved;
         public Pack(int ID, Node node, int HP, int AP, int lowerBound, int upperBound = 0)
         {
             //Generates a new pack of monsters. If the fourth parameter is left out, the pack size will equal that of lowerBound. 
@@ -32,6 +33,7 @@ namespace ConsoleApplication1
                 pack.Add(new Monster(HP, AP));
 
             zone = node.zone;
+            moved = false;
         }
 
         public void Move()
@@ -53,13 +55,14 @@ namespace ConsoleApplication1
             int monstersInNode = 0;
             for(int i = 0; i< target.monsters.Count; i++)
                 monstersInNode += target.monsters[i].Count;
-            
 
             //If there's space for the pack, move to target
             if(monstersInNode + this.Count < target.maxMonsters && target.zone == currentNode.zone)
             {
                 currentNode.monsters.Remove(this);
+                currentNode.monsterAmount -= pack.Count;
                 target.monsters.Add(this);
+                ((Node)target).monsterAmount += pack.Count;
                 currentNode = (Node)target;
                 Console.WriteLine("The Monster pack moved to " + target.Name());
             }
@@ -67,6 +70,8 @@ namespace ConsoleApplication1
 
         public void MoveTowardsPlayer(OgNode playerNode)
         {
+            moved = true;
+
             //select a target node
             List<OgNode> shortestPath = Dungeon.shortestPath(currentNode, playerNode, true);
             if (shortestPath == null)
@@ -86,7 +91,9 @@ namespace ConsoleApplication1
             if (monstersInNode + this.Count < target.maxMonsters)
             {
                 currentNode.monsters.Remove(this);
+                currentNode.monsterAmount -= pack.Count;
                 target.monsters.Add(this);
+                ((Node)target).monsterAmount += pack.Count;
                 currentNode = (Node)target;
                 Console.WriteLine("A Monster pack moved to " + target.Name());
             }

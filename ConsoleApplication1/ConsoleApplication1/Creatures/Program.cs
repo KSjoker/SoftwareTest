@@ -5,23 +5,62 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
+using SaveAndReplay;
 
 namespace ConsoleApplication1
 {
     class Program
     {
+        static List<Game> gameStates;
         static void Main(string[] args)
+        {
+            Console.WriteLine("What do you want to do?");
+            Console.WriteLine("1 = Play, save and test a game session");
+            Console.WriteLine("2 = Replay and test a saved game session");
+            string answer = Console.ReadLine();
+
+            // If we want to replay a game session we need to load it first
+            if (answer == "2")
+            {
+                SaveAndReplay.SaveGame.Replay = true;
+                string[] lines = System.IO.File.ReadAllLines(@"C:\Users\K.E.R.I.M\Documents\GitHub\SoftwareTest\ConsoleApplication1\GameSession.txt");
+                foreach (string line in lines)
+                    SaveAndReplay.SaveGame.GameSession.Add(line);
+            }
+
+            PlayGame();
+
+            //Test session
+            Tests();
+
+            Console.ReadLine();
+        }
+
+        //Deep Copy object
+        static T DeepClone<T>(T obj)
+        {
+            using (var ms = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(ms, obj);
+                ms.Position = 0;
+
+                return (T)formatter.Deserialize(ms);
+            }
+        }
+
+        static void PlayGame()
         {
             Console.WriteLine("Creating new Game...");
             //Creating new game
             Game game = new Game();
             bool gaming = true;
 
-            Console.WriteLine("Press any key to start new Game");
-            Console.ReadLine();
+            Console.WriteLine("Game Starts");
+            Console.WriteLine(" ");
 
             // List of game states
-            List<Game> gameStates = new List<Game>();
+            gameStates = new List<Game>();
 
             // ADDING START GAME STATE
             gameStates.Add(DeepClone<Game>(game));
@@ -32,10 +71,6 @@ namespace ConsoleApplication1
                 Player player = game.player;
                 Dungeon dungeon = game.dungeon;
 
-                //Update item/monster list
-                game.itemListUpdate();
-                game.monsterListUpdate();
-
                 //MONSTERS MOVE TO PLAYER IN SAME ZONE
                 Console.WriteLine("MONSTER POSITION INFO------------------------------------------");
                 if (currentNode.zone != -1) //We are in a zone which has a level of >= 1
@@ -43,10 +78,17 @@ namespace ConsoleApplication1
                     {
                         Pack[] packs = node.monsters.ToArray();
                         for (int i = 0; i < packs.Length; i++)
-                            packs[i].MoveTowardsPlayer(currentNode);
+                        {
+                            if (!packs[i].moved) //If we haven't moved the pack yet
+                                packs[i].MoveTowardsPlayer(currentNode);
+                        }
                     }
                 else
                     Console.WriteLine("No Monsters moved towards you....");
+
+                // Set moved boolean to false;
+                foreach (Pack pack in game.monsters)
+                    pack.moved = false;
 
                 // ADDING GAME STATE
                 gameStates.Add(DeepClone<Game>(game));
@@ -197,7 +239,18 @@ namespace ConsoleApplication1
                     if (!bridgeDestroy)
                     {
                         Console.WriteLine("Pick a destination: write ID of edge, if you write something else you will stay in the Current Node");
-                        string answer = Console.ReadLine();
+                        string answer;
+                        if (SaveAndReplay.SaveGame.Replay) //Replaying the game
+                        {
+                            answer = SaveAndReplay.SaveGame.GameSession[0]; // Take answer
+                            SaveAndReplay.SaveGame.GameSession.RemoveAt(0); // Remove answer
+                        }
+                        else //Playing actual session
+                        {
+                            answer = Console.ReadLine();
+                            SaveAndReplay.SaveGame.GameSession.Add(answer);
+                        }
+
                         foreach (OgNode neighbor in currentNode.neighbors)
                         {
                             if (answer == neighbor.Name())
@@ -217,8 +270,9 @@ namespace ConsoleApplication1
                 else
                     game = new Game();
 
-                //Update monster list
+                //Update monster/item list
                 game.monsterListUpdate();
+                game.itemListUpdate();
 
                 // ADDING GAME STATE
                 gameStates.Add(DeepClone<Game>(game));
@@ -226,7 +280,18 @@ namespace ConsoleApplication1
                 Console.WriteLine("Do you want to continue playing? Yes or No");
                 while (gaming)
                 {
-                    string answer = Console.ReadLine();
+                    string answer;
+                    if (SaveAndReplay.SaveGame.Replay) // Replaying the game
+                    {
+                        answer = SaveAndReplay.SaveGame.GameSession[0]; // Take answer
+                        SaveAndReplay.SaveGame.GameSession.RemoveAt(0); // Remove answer
+                    }
+                    else //Playing actual session
+                    {
+                        answer = Console.ReadLine();
+                        SaveAndReplay.SaveGame.GameSession.Add(answer);
+                    }
+                    
                     if (answer == "Yes")
                         break;
                     else if (answer == "No")
@@ -236,24 +301,19 @@ namespace ConsoleApplication1
                 }
             }
 
-            //Testing play session
-            ConsoleApplication1.Tests.CapacityTest(gameStates);
-            ConsoleApplication1.Tests.ZoneTest(gameStates);
-            ConsoleApplication1.Tests.MonsterZoneTest(gameStates);
-
+            // Saving session if not replaying
+            if (!SaveAndReplay.SaveGame.Replay)
+            {
+                System.IO.File.WriteAllLines(@"C:\Users\K.E.R.I.M\Documents\GitHub\SoftwareTest\ConsoleApplication1\GameSession.txt",
+                    SaveAndReplay.SaveGame.GameSession);
+            }
         }
 
-        //Deep Copy object
-        public static T DeepClone<T>(T obj)
+        static void Tests()
         {
-            using (var ms = new MemoryStream())
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(ms, obj);
-                ms.Position = 0;
-
-                return (T)formatter.Deserialize(ms);
-            }
+            //Testing play session
+            ConsoleApplication1.Tests.CapacityTest(gameStates);
+            ConsoleApplication1.Tests.MonsterZoneTest(gameStates);
         }
 
     }

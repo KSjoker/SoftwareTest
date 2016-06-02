@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SaveAndReplay;
 
 
 namespace ConsoleApplication1
@@ -33,12 +34,22 @@ namespace ConsoleApplication1
         }
         public int getCommand()
         {
+            if (SaveAndReplay.SaveGame.Replay)
+            {
+                string answer = SaveAndReplay.SaveGame.GameSession[0];
+                SaveAndReplay.SaveGame.GameSession.RemoveAt(0);
+                return int.Parse(answer);
+            }
+
             Console.WriteLine("What do you want to do? 1 = Move, 2 = Use Potion, 3 = use Time Crystal, 4 = Retreat, 5 = Continue Combat");
             while (true)
             {
                 int answer = int.Parse(Console.ReadLine());
                 if (answer <= 5 && answer > 0)
+                {
+                    SaveAndReplay.SaveGame.GameSession.Add(answer.ToString());
                     return answer;
+                }
                 else
                     Console.WriteLine("Please write a number between 0 and 6");
             }
@@ -53,6 +64,7 @@ namespace ConsoleApplication1
                 if (p.pack[0].HP < 1)
                 {
                     killpoint++;
+                    ((Node)currentNode).monsterAmount--;
                     p.pack.RemoveAt(0);
                     Console.WriteLine("You have killed the monster");
                 }
@@ -61,14 +73,20 @@ namespace ConsoleApplication1
             {
                 Console.WriteLine("Time Crystal is in use, every monster is attacked");
                 for (int i = 0; i < p.Count; i++)
+                {
+                    Console.WriteLine("Monster HP was " + p.pack[i].HP.ToString());
                     p.pack[i].HP = p.pack[i].HP - AR;
+                    Console.WriteLine("Monster HP is now " + p.pack[i].HP.ToString());
+                }
 
                 for (int i = 0; i < p.pack.Count;)
                 {
                     if (p.pack[0].HP < 1)
                     {
                         killpoint++;
+                        ((Node)currentNode).monsterAmount--;
                         p.pack.RemoveAt(0);
+                        Console.WriteLine("You have killed a monster");
                     }
                     else
                         i++;
