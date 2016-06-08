@@ -19,7 +19,7 @@ namespace ConsoleApplication1
             Console.WriteLine("1 = Play, save and test a game session");
             Console.WriteLine("2 = Replay and test a saved game session");
             string answer = Console.ReadLine();
-            path = @"";
+            path = @"C:\Users\K.E.R.I.M\Documents\GitHub\SoftwareTest\ConsoleApplication1\GameSession.txt";
 
             // If we want to replay a game session we need to load it first
             if (answer == "2")
@@ -313,10 +313,38 @@ namespace ConsoleApplication1
 
         static void Tests()
         {
+            Console.WriteLine("STARTING ALL TESTS-------------------------------------------------");
+            Console.WriteLine(" ");
+
+            bool[] tests = new bool[4];
+            bool test = true;
+
             //Testing play session
-            ConsoleApplication1.Tests.CapacityTest(gameStates);
-            ConsoleApplication1.Tests.MonsterZoneTest(gameStates);
-            ConsoleApplication1.Tests.KillPointTest(gameStates);
+            tests[0] = ConsoleApplication1.Tests.CapacityTest(gameStates);
+            tests[1] = ConsoleApplication1.Tests.MonsterZoneTest(gameStates);
+            tests[2] = ConsoleApplication1.Tests.KillPointTest(gameStates);
+            tests[3] = ConsoleApplication1.Tests.ItemPickUpTest(gameStates);
+            test &= (tests[0] && tests[1] && tests[2] && tests[3]);
+
+            if (test)
+                Console.WriteLine("All test requirements achieved");
+            else
+                Console.WriteLine("Not All test requirements achieved");
+
+            //Checking coverage
+            float total = 0;
+            foreach (bool covered in tests)
+                if (covered)
+                    total++;
+
+            Console.WriteLine("Achieved = " + ((total / 4) * 100).ToString() + "%");
+
+            if (total != 4)
+                for (int i = 0; i < 4; i++)
+                    if (!tests[i])
+                        Console.WriteLine("Test " + i.ToString() + " was not covered");
+
+            Console.WriteLine("  ");
         }
 
     }

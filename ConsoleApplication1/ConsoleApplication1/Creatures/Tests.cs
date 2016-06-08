@@ -145,7 +145,7 @@ namespace ConsoleApplication1
                     {
                         foreach (Pack pack in nextState.monsters)
                             if (pack.ID == monsterPack.ID)
-                                if (pack.currentNode.Name() != monsterPack.currentNode.Name())
+                                if (pack.currentNode.Name() != monsterPack.currentNode.Name()) // If monster pack moved
                                 {
                                     if (monsterPack.currentNode == game.player.currentNode) //If monster and player are in the same node now
                                         coverage[3] = true; // Checking whether pack will flee from combat
@@ -281,12 +281,68 @@ namespace ConsoleApplication1
         }
 
         // Specification 5, we can't tweak our monsters
-        static public bool UniqueCombatTest(List<Game> games)
+        static public bool ItemPickUpTest(List<Game> games)
         {
-            int uniqueCombats = 0;
-            int difficulty = games[0].dungeon.bridges.Length;
-            bool test = false;
+            Console.WriteLine("ITEM PICK-UP TEST--------------------------------------------------");
 
+            bool[] coverage = new bool[4];
+
+            bool test = true;
+
+            for (int i = 0; i < games.Count; i++)
+            {
+                Game nextState;
+                if (i != games.Count - 1)
+                    nextState = games[i + 1];
+                else
+                    nextState = null;
+
+                Game game = games[i];
+
+                if (i != games.Count - 1)
+                {
+                    int currentItems = game.player.potions.Count + game.player.crystals.Count;
+                    int nextItems = nextState.player.potions.Count + nextState.player.crystals.Count;
+
+                    //Check if player moved to another node
+                    if (game.player.currentNode.Name() != nextState.player.currentNode.Name())
+                    {
+                        test &= nextItems >= currentItems; // The player can't have a decrease in items when moving to a neighboring node
+                        test &= nextState.player.currentNode.items.Count == 0; // The player should have taken all the items in the next node
+
+                        if (nextState.player.currentNode.Name() == "Begin" || nextState.player.currentNode.Name() == "End")
+                            coverage[2] = true; // We the next node to be a begin or end node (without items)
+                        else
+                            coverage[3] = true; // We want the next node to be NOT a begin or end node (with items (if RNG is off))
+                    }
+
+                    //Coverage
+                    if (currentItems == 0)
+                        coverage[0] = true; // Player has no items
+                    else
+                        coverage[1] = true; // Player has items
+                }
+            }
+
+            if (test)
+                Console.WriteLine("ItemPickUp satisfies constraint");
+            else
+                Console.WriteLine("ItemPickUp does not satisfy constraint");
+
+            //Checking coverage
+            float total = 0;
+            foreach (bool covered in coverage)
+                if (covered)
+                    total++;
+
+            Console.WriteLine("Each Choice Coverage = " + ((total / 4) * 100).ToString() + "%");
+
+            if (total != 4)
+                for (int i = 0; i < 4; i++)
+                    if (!coverage[i])
+                        Console.WriteLine("Block " + i.ToString() + " was not covered");
+
+            Console.WriteLine("  ");
             return test;
         }
     }
