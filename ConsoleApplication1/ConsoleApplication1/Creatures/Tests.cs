@@ -220,7 +220,8 @@ namespace ConsoleApplication1
 
                     // If the player has not used a crystal in the current and next state, 
                     // then KP + monsterAmount should be the same in both states
-                    if (!currentUse && !nextUse)
+                    // AND WE ARE STILL IN THE SAME DUNGEON
+                    if (!currentUse && !nextUse && game.dungeon.bridges.Length == nextState.dungeon.bridges.Length)
                     {
                         int currentCount, nextCount;
                         currentCount = nextCount = 0;
@@ -311,7 +312,7 @@ namespace ConsoleApplication1
                         test &= nextState.player.currentNode.items.Count == 0; // The player should have taken all the items in the next node
 
                         if (nextState.player.currentNode.Name() == "Begin" || nextState.player.currentNode.Name() == "End")
-                            coverage[2] = true; // We the next node to be a begin or end node (without items)
+                            coverage[2] = true; // We want the next node to be a begin or end node (without items)
                         else
                             coverage[3] = true; // We want the next node to be NOT a begin or end node (with items (if RNG is off))
                     }

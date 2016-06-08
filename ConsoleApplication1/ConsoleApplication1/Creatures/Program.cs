@@ -19,7 +19,7 @@ namespace ConsoleApplication1
             Console.WriteLine("1 = Play, save and test a game session");
             Console.WriteLine("2 = Replay and test a saved game session");
             string answer = Console.ReadLine();
-            path = @"C:\Users\K.E.R.I.M\Documents\GitHub\SoftwareTest\ConsoleApplication1\GameSession.txt";
+            path = @"";
 
             // If we want to replay a game session we need to load it first
             if (answer == "2")
