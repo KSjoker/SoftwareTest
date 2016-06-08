@@ -12,18 +12,20 @@ namespace ConsoleApplication1
     class Program
     {
         static List<Game> gameStates;
+        static string path;
         static void Main(string[] args)
         {
             Console.WriteLine("What do you want to do?");
             Console.WriteLine("1 = Play, save and test a game session");
             Console.WriteLine("2 = Replay and test a saved game session");
             string answer = Console.ReadLine();
+            path = @"";
 
             // If we want to replay a game session we need to load it first
             if (answer == "2")
             {
                 SaveAndReplay.SaveGame.Replay = true;
-                string[] lines = System.IO.File.ReadAllLines(@"path");
+                string[] lines = System.IO.File.ReadAllLines(path);
                 foreach (string line in lines)
                     SaveAndReplay.SaveGame.GameSession.Add(line);
             }
@@ -304,7 +306,7 @@ namespace ConsoleApplication1
             // Saving session if not replaying
             if (!SaveAndReplay.SaveGame.Replay)
             {
-                System.IO.File.WriteAllLines(@"path",
+                System.IO.File.WriteAllLines(path,
                     SaveAndReplay.SaveGame.GameSession);
             }
         }
@@ -314,6 +316,7 @@ namespace ConsoleApplication1
             //Testing play session
             ConsoleApplication1.Tests.CapacityTest(gameStates);
             ConsoleApplication1.Tests.MonsterZoneTest(gameStates);
+            ConsoleApplication1.Tests.KillPointTest(gameStates);
         }
 
     }

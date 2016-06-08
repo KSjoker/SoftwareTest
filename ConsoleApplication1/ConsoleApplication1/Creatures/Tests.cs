@@ -8,21 +8,22 @@ namespace ConsoleApplication1
 {
     public static class Tests
     {
-        static public bool CapacityTest(List<Game> testcase)
+        // Specification 1
+        static public bool CapacityTest(List<Game> games)
         {
             Console.WriteLine("  ");
             Console.WriteLine("STARTING CAPACITY TEST----------------------------------------------");
             bool[] coverage = new bool[10];
 
-            for (int i = 0; i < testcase.Count; i++)
+            for (int i = 0; i < games.Count; i++)
             {
                 Game nextState;
-                if (i != testcase.Count - 1)
-                    nextState = testcase[i + 1];
+                if (i != games.Count - 1)
+                    nextState = games[i + 1];
                 else
                     nextState = null;
 
-                Game game = testcase[i];
+                Game game = games[i];
                 foreach (List<OgNode> zone in game.dungeon.zones)
                     foreach (Node n in zone)
                     {
@@ -48,7 +49,7 @@ namespace ConsoleApplication1
                         if (n.monsterAmount == n.maxMonsters) //u’s current occupancy (already full).
                             coverage[5] = true;
 
-                        if(i != testcase.Count - 1)
+                        if (i != games.Count - 1)
                         {
                             List<int> packIDsneighbors = new List<int>();
                             List<int> packIDscurrent = new List<int>();
@@ -62,7 +63,7 @@ namespace ConsoleApplication1
                             foreach (Pack pack in n.monsters) //Find all packs in current node
                                 packIDscurrent.Add(pack.ID);
 
-                            
+
                             foreach (OgNode node in nextState.dungeon.nodes) //Find current node in next state
                             {
                                 if (node.Name() == n.Name())
@@ -110,43 +111,9 @@ namespace ConsoleApplication1
             return true;
         }
 
-        static public bool ZoneTest(List<Game> testcase)
-        {
-            Console.WriteLine("Starting zone test");
-
-            for (int i = 0; i < testcase.Count - 1; i++)
-            {
-                Game game = testcase[i];
-                Player player = game.player;
-                Game game2 = testcase[i + 1];
-                Player player2 = game2.player;
-                foreach (Pack p in game.monsters)
-                {
-                    if (p.zone == player.currentNode.zone)
-                    {
-                        Pack p2 = game2.monsters.Find(x => x.ID == p.ID);
-                        List<OgNode> dist = Dungeon.shortestPath(p.currentNode, player.currentNode, true);
-                        List<OgNode> dist2 = Dungeon.shortestPath(p2.currentNode, player2.currentNode, true);
-                        if (dist2 != null && dist != null)
-                        {
-                            if (dist2.Count - dist.Count > 0)
-                            {
-                                Console.WriteLine("Error:");
-                                Console.WriteLine("Pack moved wrong at iteration [0]", i);
-                                return false;
-                            }
-                        }
-                    }
-                }
-            }
-
-            Console.WriteLine("No issues with monster movement");
-            return true;
-        }
-
+        // Specification 2
         static public bool MonsterZoneTest(List<Game> games)
         {
-            Console.WriteLine(" ");
             Console.WriteLine("STARTING MONSTER ZONE TEST------------------------------------------");
             bool[] coverage = new bool[7];
 
@@ -167,7 +134,7 @@ namespace ConsoleApplication1
                     test &= monsterPack.zone == monsterPack.currentNode.zone;
 
                     // Each Choice Coverage
-                    if (monsterPack.currentNode.zone == game.dungeon.bridges.Length - (game.dungeon.bridges.Length - 1))
+                    if (monsterPack.currentNode.zone == 1)
                         coverage[0] = true; // the zone’s location (first).
                     if (monsterPack.currentNode.zone > game.dungeon.bridges.Length - (game.dungeon.bridges.Length - 1) && monsterPack.currentNode.zone < game.dungeon.bridges.Length)
                         coverage[1] = true; // the zone’s location (middle).
@@ -205,8 +172,7 @@ namespace ConsoleApplication1
                 if (covered)
                     total++;
 
-            Console.WriteLine("No problem with capacity found");
-            Console.WriteLine("Each Choice Coverage = " + ((total / 7)* 100).ToString() + "%");
+            Console.WriteLine("Each Choice Coverage = " + ((total / 7) * 100).ToString() + "%");
 
             if (total != 7)
                 for (int i = 0; i < 7; i++)
@@ -214,6 +180,113 @@ namespace ConsoleApplication1
                         Console.WriteLine("Block " + i.ToString() + " was not covered");
 
             Console.WriteLine("  ");
+            return test;
+        }
+
+        // Specification 4
+        static public bool KillPointTest(List<Game> games)
+        {
+            Console.WriteLine("STARTING KILLPOINT TEST---------------------------------------------");
+
+            bool[] coverage = new bool[6];
+
+            bool test = true;
+
+            for (int i = 0; i < games.Count; i++)
+            {
+                Game nextState;
+                if (i != games.Count - 1)
+                    nextState = games[i + 1];
+                else
+                    nextState = null;
+
+                Game game = games[i];
+
+                bool currentUse, nextUse;
+
+                if (i != games.Count - 1)
+                {
+                    // Checking if crystal is used by player in current State
+                    if (game.player.currentNode.Name() == "Begin" || game.player.currentNode.Name() == "End")
+                        currentUse = false;
+                    else
+                        currentUse = ((Node)game.player.currentNode).crystalUsed;
+
+                    // Checking if crystal is used by player in next state
+                    if (nextState.player.currentNode.Name() == "Begin" || nextState.player.currentNode.Name() == "End")
+                        nextUse = false;
+                    else
+                        nextUse = ((Node)nextState.player.currentNode).crystalUsed;
+
+                    // If the player has not used a crystal in the current and next state, 
+                    // then KP + monsterAmount should be the same in both states
+                    if (!currentUse && !nextUse)
+                    {
+                        int currentCount, nextCount;
+                        currentCount = nextCount = 0;
+
+
+                        // Count total monsters in current State
+                        foreach (Pack pack in game.monsters)
+                            currentCount += pack.pack.Count();
+
+                        // Count total monsters in next State
+                        foreach (Pack pack in nextState.monsters)
+                            nextCount += pack.pack.Count();
+
+                        test &= (game.player.killpoint + currentCount) == (nextState.player.killpoint + nextCount);
+                    }
+
+                    // Our coverage criteria
+                    // We want a player(0 KP, >0 KP)
+                    // We want a use and not a use of a crystal in the current and next State
+                    if (game.player.killpoint == 0)
+                        coverage[0] = true; // Player with KP = 0
+                    else
+                        coverage[1] = true; // Player with KP > 0
+
+                    if (currentUse)
+                        coverage[2] = true; // Use of crystal in current state
+                    else
+                        coverage[3] = true; // No Use of crystal in current state
+
+                    if (nextUse)
+                        coverage[4] = true; // Use of crystal in next state
+                    else
+                        coverage[5] = true; // No Use of crystal in next state
+                }
+
+            }
+
+            if (test)
+                Console.WriteLine("KillPoint balans satisfies constraint");
+            else
+                Console.WriteLine("KillPoint balans does not satisfy constraint");
+
+            //Checking coverage
+            float total = 0;
+            foreach (bool covered in coverage)
+                if (covered)
+                    total++;
+
+            Console.WriteLine("Each Choice Coverage = " + ((total / 6) * 100).ToString() + "%");
+
+            if (total != 6)
+                for (int i = 0; i < 6; i++)
+                    if (!coverage[i])
+                        Console.WriteLine("Block " + i.ToString() + " was not covered");
+
+            Console.WriteLine("  ");
+            return test;
+        }
+
+        // Specification 5, we can't tweak our monsters
+        static public bool UniqueCombatTest(List<Game> games)
+        {
+            int uniqueCombats = 0;
+            int difficulty = games[0].dungeon.bridges.Length;
+            bool test = false;
+
             return test;
         }
     }
