@@ -19,6 +19,7 @@ namespace ConsoleApplication1
             Console.WriteLine("1 = Play, save and test a game session");
             Console.WriteLine("2 = Replay and test a saved game session");
             string answer = Console.ReadLine();
+            // Test1 (player kills monsters), Test2 (player doesn't kill monsters)
             path = @"";
 
             // If we want to replay a game session we need to load it first
